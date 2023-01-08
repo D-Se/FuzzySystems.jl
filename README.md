@@ -3,6 +3,12 @@
 # FuzzySystems.jl <img src="docs/src/assets/logo.png" align="right" width="120"/>
 
 </center>
+
+[![codecov](https://codecov.io/gh/D-Se/FuzzySystems.jl/branch/main/graph/badge.svg?token=R8KSDOL5EG)](https://codecov.io/gh/D-Se/FuzzySystems.jl)
+
+<!-- to add later:
+[![Downloads](https://shields.io/endpoint?url=https://pkgs.genieframework.com/api/v1/badge/FuzzySystems)](https://pkgs.genieframework.com?packages=FuzzySystems)
+-->
 :warning: This package is in early development :warning:
 
 
