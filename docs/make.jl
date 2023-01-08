@@ -30,3 +30,11 @@ makedocs(
     ],
     draft = true
 )
+
+deploydocs(
+    repo = "github.com/D-Se/FRBS.git", # update to FuzzySystems.jl
+    target = "build",
+    deps = nothing,
+    make = nothing,
+    devbranch = "main"
+)
