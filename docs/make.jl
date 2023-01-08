@@ -1,6 +1,7 @@
 push!(LOAD_PATH, "../src/")
 
-using Documenter, FuzzySystems
+using Documenter
+using FuzzySystems
 
 DocMeta.setdocmeta!(FuzzySystems, :DocTestSetup, :(using FuzzySystems); recursive = true)
 
