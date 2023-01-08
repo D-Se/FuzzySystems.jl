@@ -33,7 +33,7 @@ makedocs(
 )
 
 deploydocs(
-    repo = "github.com/D-Se/FRBS.git", # update to FuzzySystems.jl
+    repo = "github.com/D-Se/FuzzySystems.jl.git", # update to FuzzySystems.jl
     target = "build",
     deps = nothing,
     make = nothing,
