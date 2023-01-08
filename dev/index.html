@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/><title>Home · FuzzySystems</title><script data-outdated-warner src="assets/warner.js"></script><link href="https://cdnjs.cloudflare.com/ajax/libs/lato-font/3.0.0/css/lato-font.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/juliamono/0.045/juliamono.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/fontawesome.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/solid.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/brands.min.css" rel="stylesheet" type="text/css"/><link href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.13.24/katex.min.css" rel="stylesheet" type="text/css"/><script>documenterBaseURL="."</script><script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" data-main="assets/documenter.js"></script><script src="siteinfo.js"></script><script src="../versions.js"></script><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-dark.css" data-theme-name="documenter-dark" data-theme-primary-dark/><link class="docs-theme-link" rel="stylesheet" type="text/css" href="assets/themes/documenter-light.css" data-theme-name="documenter-light" data-theme-primary/><script src="assets/themeswap.js"></script></head><body><div id="documenter"><nav class="docs-sidebar"><a class="docs-logo" href><img src="assets/logo.png" alt="FuzzySystems logo"/></a><div class="docs-package-name"><span class="docs-autofit"><a href>FuzzySystems</a></span></div><form class="docs-search" action="search/"><input class="docs-search-query" id="documenter-search-query" name="q" type="text" placeholder="Search docs"/></form><ul class="docs-menu"><li class="is-active"><a class="tocitem" href>Home</a></li><li><span class="tocitem">Guide</span><ul><li><a class="tocitem" href="guide/tipper/">Quick Start</a></li></ul></li><li><span class="tocitem">Explanations</span><ul><li><a class="tocitem" href="explanations/system/">Fuzzy System</a></li><li><a class="tocitem" href="explanations/membership/">Membership</a></li></ul></li><li><span class="tocitem">Reference</span><ul><li><a class="tocitem" href="reference/functionindex/">Alphabetical function list</a></li><li><a class="tocitem" href="reference/api/">Function reference</a></li></ul></li></ul><div class="docs-version-selector field has-addons"><div class="control"><span class="docs-label button is-static is-size-7">Version</span></div><div class="docs-selector control is-expanded"><div class="select is-fullwidth is-size-7"><select id="documenter-version-selector"></select></div></div></div></nav><div class="docs-main"><header class="docs-navbar"><nav class="breadcrumb"><ul class="is-hidden-mobile"><li class="is-active"><a href>Home</a></li></ul><ul class="is-hidden-tablet"><li class="is-active"><a href>Home</a></li></ul></nav><div class="docs-right"><a class="docs-edit-link" href="none" title="Edit source"><span class="docs-icon fa"></span><span class="docs-label is-hidden-touch">Edit source</span></a><a class="docs-settings-button fas fa-cog" id="documenter-settings-button" href="#" title="Settings"></a><a class="docs-sidebar-button fa fa-bars is-hidden-desktop" id="documenter-sidebar-button" href="#"></a></div></header><article class="content" id="documenter-page"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css">
+
+<style>
+    a, a:hover, a:visited, a:active {color: inherit; text-decoration: none; }
+    .float-child { width: 45%; height: 100px; float: left; padding: 5px; } 
+    .fa-beat-hover:hover {
+        -webkit-animation: fa-beat 1.0s infinite linear;
+        -moz-animation: fa-beat 1.0s infinite linear;
+        -o-animation: fa-beat 1.0s infinite linear;
+        animation: fa-beat 1.0s infinite linear;
+    }
+    p { clear:both; }
+    .nut { display: none; }
+    .shell:hover .nut { display: block; }
+    #feature ul, #feature li {
+        margin: 0; 
+        padding: 0;
+        text-align: left;
+    }
+</style>
+
+<center>
+   <h1>FuzzySystems.jl</h1>
+   <p><i>Fuzzy expert systems and logic module for approximate imprecise reasoning</i></p>
+   <div class="float-container">
+      <div class="float-child">
+         <a href="https://stackoverflow.com/questions/tagged/julia?sort=Newest" style="float:right"><i class="fa-brands fa-stack-overflow fa-beat-hover fa-2x"></i></a>
+      </div>
+      <div class="float-child">
+         <iframe src="https://ghbtns.com/github-btn.html?user=D-Se&repo=FuzzySystems.jl&type=star&count=true&size=large" style="height: 70px; width: 150px; float: left" frameborder="0" scrolling="0" title="GitHub"></iframe>
+      </div>
+   </div>
+      <div>
+      <hr style="clear:both"><h3>Features</h3>
+      <div id="feature">
+        <ul style="list-style: none; display: grid; grid-template-columns: auto auto auto auto;">
+            <li>&nbsp;</li>
+            <li>
+                <div class="shell">
+                    <i class="fa-solid fa-list fa-beat-hover fa-3x"></i>&nbsp;&nbsp;Fuzzy API
+                    <div class="nut">
+                        <pre>
+                            <code>
+@rule cheap tip    = poor service | rancid food
+@rule average tip  = good service
+@rule generous tip = excellent service | delicious food
+
+@var in service {
+    poor:       T₄ 0 0 2 4,
+    good:       T₃ 3 5 7,
+    excellent:  T₄ 6 8 10 10
+}
+@var in food {
+    rancid:     T₄ 0 0 3 6,
+    delicious:  T₄ 4 7 10 10
+}
+
+@var out tip {
+    cheap:      T₄ 10 10 20 30,
+    average:    T₃ 20 30 40,
+    generous:   T₄ 30 40 50 50
+}
+                                </code>
+                            </pre>
+                    </div>
+                </div>
+            </li>
+            <li>&nbsp;</li>
+            <li><a href="reference/api"><i class="fa-solid fa-book fa-beat-hover fa-3x"></i></a>&nbsp;&nbsp;Documented</li>
+            <li>&nbsp;</li>
+            <li>
+                <div class="shell">
+                    <i class="fa-solid fa-chart-area fa-beat-hover fa-3x"></i>&nbsp;&nbsp;Membership
+                    <div class="nut">
+                        <table>
+                            <tr> <th></th> <th></th> <th></th> </tr>
+                            <tr>
+                                <td>Gaussian</td> <td>Generalized Bell</td> <td>Linear</td>
+                             </tr>
+                            <tr>
+                                <td>Triangular</td> <td>Trapezoid</td> <td>Sigmoid</td>
+                            </tr>
+                            <tr>
+                                <td>S</td> <td>Z</td> <td>π</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </li>
+            <li>&nbsp;</li>
+            <li><a href="reference/api"><i class="fa-solid fa-gauge-high fa-beat-hover fa-3x"></i></a>&nbsp;&nbsp;Fast</li>
+        </ul>
+        </div>
+    </div>
+
+    <br/><br/>
+
+   <img src="assets/FIS.svg" title="Fuzzy System">
+</center></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="guide/tipper/">Quick Start »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 0.27.23 on <span class="colophon-date" title="Sunday 8 January 2023 08:29">Sunday 8 January 2023</span>. Using Julia version 1.8.3.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
