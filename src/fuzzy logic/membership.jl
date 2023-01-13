@@ -109,5 +109,5 @@ Base.show(io::IO, mf::Bell)       = print(io, "B|$(¦(mf.l, 2))$(¦(mf.t, 1))$(�
 Base.show(io::IO, mf::Sigmoid)    = print(io, "S|$(¦(mf.c, 3))↗$(¦(mf.a, 3))|")
 Base.show(io::IO, mf::Lins)       = print(io, "L|$(¦(mf.a, 2))/$(¦(mf.b, 1))|")
 function Base.show(io::IO, mf::Trapezoid)
-    print(io, "T|$(¦(mf.lb, 2))$(¦(mf.lt, 1)) $(¦(mf.rt, 1))$(¦(mf.rb, 2))|")
+    print(io, "Q|$(¦(mf.lb, 2))$(¦(mf.lt, 1)) $(¦(mf.rt, 1))$(¦(mf.rb, 2))|")
 end
