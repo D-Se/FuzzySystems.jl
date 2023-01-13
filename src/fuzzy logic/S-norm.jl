@@ -1,4 +1,4 @@
-# union of fuzzy sets (AND). Synonym of t-conorm.
+# Union of fuzzy sets (AND). Synonym of t-conorm.
 
 """
 is a fuzzy union (AND) of the form `[0,1]² -> [0,1]` 1) associative, 2) monotone, 3) communicative and 4) bounded?

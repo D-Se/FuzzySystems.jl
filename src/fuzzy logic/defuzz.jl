@@ -129,7 +129,7 @@ function LOM(𝒰, mf)
     maximum(𝒰[findall(i -> i == m, membership)])
 end
 
-function WTAV(firing_strength, fis)
+#= function WTAV(firing_strength, fis)
     mean_vec = Float64[]
     for i in eachindex(fis.rules)
         push!(mean_vec, mean_at(fis.output_dict[rules[i].output], firing_strength[i]))
@@ -141,7 +141,7 @@ function WTAV(firing_strength, fis)
     else
         mean_vec
     end
-end
+end =#
 
 function mean_at(mf::triangular, firing_strength)
     isone(firing_strength) && return mf.t

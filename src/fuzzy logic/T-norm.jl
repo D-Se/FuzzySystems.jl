@@ -1,4 +1,4 @@
-# intersection (OR). triangular-norm.
+# Intersection (OR). triangular-norm.
 
 """
 is a fuzzy intersection (OR) function of the form `[0,1]² -> [0,1]` 1) associative, 2) monotone, 3) communicative and 4) bounded?
@@ -9,7 +9,7 @@ function istnorm(fun)
 	fun(a, fun(b, d)) == fun(fun(a, b), d) && # associativity
 		fun(a, b) <= fun(a, d) && # monotonicity
 		fun(a, b) == fun(b, a) && # communicativity
-		fun(a, 1) == a # boundary requirement 
+		fun(a, 1) == a # boundary requirement
 	# continuity or strict monotonicty may be added
 end
 
@@ -22,7 +22,7 @@ hamacher_product(strengths) = reduce((x, i) -> x * i / (x + i - x * i), strength
 
 minimumT(x, y)				= min(x, y) # Gödel
 algebraic_product(x, y)     = x * y	# product t-norm (Fodor, 2016)
-bounded_difference(x, y)    = max(0, x + y - 1) # Łukasiewicz 
+bounded_difference(x, y)    = max(0, x + y - 1) # Łukasiewicz
 drastic_product(x, y)       = isone(max(x, y)) ? min(x, y) : 0 # Dubois 1979
 einstein_product(x, y)      = x * y / (2 - (x + y - x * y))
 hamacher_product(x, y)      = x == y == 0 ? 0 : x * y / (x + y - x * y)
