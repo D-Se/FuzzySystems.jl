@@ -29,6 +29,14 @@ end
 @interface Z            a b
 @interface Piece        a b c
 
+@alias Gaussian         G gauss
+@alias Bell             B bell
+@alias Triangular       T triangle
+@alias Trapezoid        Q trap
+@alias Sigmoid          S sig
+@alias Lins             L linear
+@alias Singleton        single
+
 # helpers
 ⊕(w, x, y, z) = 2((w - x) / (y - z))^2;
 

@@ -1,3 +1,10 @@
+# create multiple const aliases at once
+macro alias(type, names...)
+    expr = Expr(:block)
+    append!(expr.args, map(name -> :(const $name = $type), names))
+    esc(:($expr))
+end
+
 function sup(x)
     replace(
         x, "1" => "¹", "2" => "²", "3" => "³", "4" => "⁴",
