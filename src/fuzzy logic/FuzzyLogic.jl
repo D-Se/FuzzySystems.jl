@@ -7,14 +7,18 @@ include("negation.jl")
 include("T-norm.jl")
 include("S-norm.jl")
 include("implication.jl")
+
+include("rule.jl")
 include("membership.jl")
 include("defuzz.jl")
 
 include("logic.jl")
 
 
-export 
-    gaussian, bell, triangular, trapezoid, sigmoid, lins, singleton, Pi, Z, S,
+export
+    Gaussian, Bell, Triangular, Trapezoid, Sigmoid, Lins, Singleton, Pi, Z, S,
+
     μ,
+
     logic
 end
