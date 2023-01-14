@@ -21,5 +21,8 @@ export
 
     μ,
 
+    # syntax convenience macros
+    Rule, @rule, @rules, @var
+
     logic
 end
