@@ -22,20 +22,12 @@ end
 @interface Trapezoid    lb lt rt rb
 @interface Sigmoid      a c #limit
 @interface Lins         a b
+@interface Linz         a b
 @interface Singleton    h
-# -- under construction --
 @interface Pi           a b c d
-@interface S            a b
-@interface Z            a b
-@interface Piece        a b c
-
-@alias Gaussian         G gauss
-@alias Bell             B bell
-@alias Triangular       T triangle
-@alias Trapezoid        Q trap
-@alias Sigmoid          S sig
-@alias Lins             L linear
-@alias Singleton        single
+@interface S_shape      a b
+@interface Z_shape      a b
+# @interface Piece        a b c
 
 # helpers
 ⊕(w, x, y, z) = 2((w - x) / (y - z))^2;
@@ -60,7 +52,8 @@ function μ end
 μ(x, mf::Triangular) = max(min((x - mf.l) / (mf.t - mf.l), (mf.r - x) / (mf.r - mf.t)), 0.0)
 μ(x, mf::Trapezoid)  = max(min((x - mf.lb) / (mf.lt - mf.lb), 1, (mf.rb - x) / (mf.rb - mf.rt)), 0)
 μ(x, mf::Sigmoid)    = @fastmath 1 / (1 + exp(-mf.a * (x - mf.c)))
-μ(x, mf::Lins)       = mf.a <= x <= mf.b ? (x-mf.a)/(mf.b-mf.a) : x <= mf.a ? 0.0 : 1.0
+μ(x, mf::Lins)       = mf.a <= x <= mf.b ? (x-mf.a) / (mf.b-mf.a) : x <= mf.a ? 0.0 : 1.0
+μ(x, mf::Linz)       = mf.a <= x <= mf.b ? (mf.a-x) / (mf.a-mf.b) : x <= mf.a ? 1.0 : 0.0
 μ(x, mf::Singleton)  = x == mf.y ? 1.0 : 0.0
 
 function μ(x, mf::Pi)
@@ -82,7 +75,7 @@ function μ(x, mf::Pi)
     end
 end
 
-function μ(x, mf::S)
+function μ(x, mf::S_shape)
     (;a, b) = mf
     ab = 0.5(a + b)
     if x <= a
@@ -96,7 +89,7 @@ function μ(x, mf::S)
     end
 end
 
-function μ(x, mf::Z)
+function μ(x, mf::Z_shape)
     (;a, b) = mf
     ab = 0.5(a + b)
     if x >= b
@@ -115,7 +108,9 @@ Base.show(io::IO, mf::Triangular) = print(io, "T|$(¦(mf.l, 2))$(¦(mf.t, 1))$(�
 Base.show(io::IO, mf::Gaussian)   = print(io, "G|$(¦(mf.t, 1))⁄$(¦(mf.σ, 2))|")
 Base.show(io::IO, mf::Bell)       = print(io, "B|$(¦(mf.l, 2))$(¦(mf.t, 1))$(¦(mf.r, 2))|")
 Base.show(io::IO, mf::Sigmoid)    = print(io, "S|$(¦(mf.c, 3))↗$(¦(mf.a, 3))|")
-Base.show(io::IO, mf::Lins)       = print(io, "L|$(¦(mf.a, 2))/$(¦(mf.b, 1))|")
+Base.show(io::IO, mf::Lins)       = print(io, "LS|$(¦(mf.a, 2))/$(¦(mf.b, 1))|")
+Base.show(io::IO, mf::Linz)       = print(io, "LZ|$(¦(mf.a, 2))/$(¦(mf.b, 1))|")
+
 function Base.show(io::IO, mf::Trapezoid)
     print(io, "Q|$(¦(mf.lb, 2))$(¦(mf.lt, 1)) $(¦(mf.rt, 1))$(¦(mf.rb, 2))|")
 end
