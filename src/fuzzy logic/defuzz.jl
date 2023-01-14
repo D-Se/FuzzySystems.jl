@@ -21,11 +21,11 @@ method one of
 
 See also [`μ`](@ref).
 """
-function defuzz end
+#= function defuzz end
 
 function defuzz(firing_strength, fis, method)
     method(firing_strength, fis)
-end
+end =#
 
 function COG(𝒰, mf)
     ∑moment_area = ∑area = 0.0
@@ -129,19 +129,18 @@ function LOM(𝒰, mf)
     maximum(𝒰[findall(i -> i == m, membership)])
 end
 
-#= function WTAV(firing_strength, fis)
+function WTAV(firing_strength, fis)
     mean_vec = Float64[]
     for i in eachindex(fis.rules)
-        push!(mean_vec, mean_at(fis.output_dict[rules[i].output], firing_strength[i]))
+        push!(mean_vec, mean_at(fis.output_dict[fis.rules[i].out], firing_strength[i]))
     end
     sumfire = sum(firing_strength)
     if sumfire != 0
         (mean_vec' * firing_strength) / sumfire
-        #(mean_vec' * firing_strength)[1] / sumfire
     else
         mean_vec
     end
-end =#
+end
 
 function mean_at(mf::Triangular, firing_strength)
     isone(firing_strength) && return mf.t

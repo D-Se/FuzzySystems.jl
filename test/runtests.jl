@@ -8,6 +8,7 @@ using Random
 Random.seed!(0)
 
 @testset "FuzzySystems" begin
+    include("system-test.jl")
     @testset "FuzzyLogic" begin
         include("fuzzy logic/membership-test.jl")
         include("fuzzy logic/implication-test.jl")
