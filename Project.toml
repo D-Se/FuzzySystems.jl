@@ -1,3 +1,6 @@
 name = "FuzzySystems"
 uuid = "95c40735-ddfa-449c-9386-f636057bb688"
 version = "0.1.0"
+
+[deps]
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"

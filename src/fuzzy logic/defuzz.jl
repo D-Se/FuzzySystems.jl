@@ -1,5 +1,5 @@
 #=
- TODO: 
+ TODO:
     Center of Sums            :COS
     First of Maxima           :FOM
     Center of Area            :COA
@@ -7,10 +7,10 @@
 """
     defuzz(firing_strength, fis, method)
 Obtain a crisp value from degrees of memberships of ``x``.
-    
+
 universe of discourse 𝒰, the range of interest.
 mf the membership function
-method one of  
+method one of
 - Center of Gravity (Centroid)  COG
 - Bisector of Area              BOA
 - Weighted Average              WAM
@@ -21,17 +21,17 @@ method one of
 
 See also [`μ`](@ref).
 """
-function defuzz end
+#= function defuzz end
 
 function defuzz(firing_strength, fis, method)
     method(firing_strength, fis)
-end
+end =#
 
 function COG(𝒰, mf)
     ∑moment_area = ∑area = 0.0
     ϵ = 2^-52
     isone(length(𝒰)) && return (𝒰 * μ(𝒰, mf) / max(mf, ϵ))
-    
+
     membership = μ.(𝒰, mf)
 
     @inbounds for i in 2:lastindex(𝒰)
@@ -75,7 +75,7 @@ function BOA(𝒰, mf)
         y₁ == y₂ == 0 || x₁ == x₂ && continue
         ∑area += if y₁ == y₂
             (x₂ - x₁) * y₁
-        elseif 0 == y₁ != y₂ 
+        elseif 0 == y₁ != y₂
             .5(x₂ - x₁) * y₂
         elseif 0 == y₂ != y₁
             .5(x₂ - x₁) * y₁
@@ -132,34 +132,33 @@ end
 function WTAV(firing_strength, fis)
     mean_vec = Float64[]
     for i in eachindex(fis.rules)
-        push!(mean_vec, mean_at(fis.output_dict[rules[i].output], firing_strength[i]))
+        push!(mean_vec, mean_at(fis.output_dict[fis.rules[i].out], firing_strength[i]))
     end
     sumfire = sum(firing_strength)
     if sumfire != 0
         (mean_vec' * firing_strength) / sumfire
-        #(mean_vec' * firing_strength)[1] / sumfire
     else
         mean_vec
     end
 end
 
-function mean_at(mf::triangular, firing_strength)
+function mean_at(mf::Triangular, firing_strength)
     isone(firing_strength) && return mf.t
     p1 = (mf.t - mf.l) * firing_strength + mf.l
     p2 = (mf.t - mf.r) * firing_strength + mf.r
     (p1 + p2) / 2
 end
 
-function mean_at(mf::trapezoid, firing_strength)
+function mean_at(mf::Trapezoid, firing_strength)
     p1 = (mf.lt - mf.lb) * firing_strength + mf.lb
     p2 = (mf.rt - mf.rb) * firing_strength + mf.rb
     (p1 + p2) / 2
 end
 
-mean_at(mf::gaussian, firing_strength) = mf.t
-mean_at(mf::bell, firing_strength) = mf.t
+mean_at(mf::Gaussian, firing_strength) = mf.t
+mean_at(mf::Bell, firing_strength) = mf.t
 
-function mean_at(mf::sigmoid, firing_strength)
+function mean_at(mf::Sigmoid, firing_strength)
     isone(firing_strength) && (firing_strength -= eps())
     iszero(firing_strength) && (firing_strength += eps())
     p1 = -log((1 / firing_strength) - 1) / mf.a + mf.c

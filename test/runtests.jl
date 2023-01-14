@@ -8,10 +8,12 @@ using Random
 Random.seed!(0)
 
 @testset "FuzzySystems" begin
+    include("system-test.jl")
     @testset "FuzzyLogic" begin
-        include("membership-test.jl")
-        include("implication-test.jl")
-        include("properties-test.jl")
-        include("defuzz-test.jl")
+        include("fuzzy logic/membership-test.jl")
+        include("fuzzy logic/implication-test.jl")
+        include("fuzzy logic/properties-test.jl")
+        include("fuzzy logic/defuzz-test.jl")
+        include("fuzzy logic/rule-test.jl")
     end
 end

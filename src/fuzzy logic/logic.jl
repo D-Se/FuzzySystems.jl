@@ -11,16 +11,96 @@ end
 Define fuzzy set operations
     logic(model, args...)
 
-Each `logic` is made up of
+Each `logic` is made up of basic (fuzzy) set operations.
 
 """
 function logic(model::Symbol, args...)
-    if length(args) > 0 
+    if length(args) > 0
         eval(Symbol(model))(args)
     else
         eval(Symbol(model))
     end
 end
+
+#region set operation properties
+# functions to verify and aid in the discovery of new set operators
+
+"""
+is a fuzzy union (s-norm, AND) of the form `[0,1]² -> [0,1]`
+1) associative, 2) monotone, 3) communicative and 4) bounded?
+"""
+function issnorm(fun)
+	a, b, d = rand(3)
+	if b > d b, d = d, b end
+	fun(a, fun(b, d)) == fun(fun(a, b), d) && # associativity
+		fun(a, b) <= fun(a, d) && # monotonicity
+		fun(a, b) == fun(b, a) && # communicativity
+		fun(a, 0) == a # boundary requirement
+	# t-conorm iff u(a, b) = 1 - t-norm(1 - a, 1 - b) [mutually dual]
+end
+
+"""
+Is a fuzzy intersection (t-norm, OR) of the form `[0,1]² -> [0,1]`
+1) associative, 2) monotone, 3) communicative and 4) bounded?
+"""
+function istnorm(fun)
+	a, b, d = rand(3)
+	if b > d b, d = d, b end
+	fun(a, fun(b, d)) == fun(fun(a, b), d) && # associativity
+		fun(a, b) <= fun(a, d) && # monotonicity
+		fun(a, b) == fun(b, a) && # communicativity
+		fun(a, 1) == a # boundary requirement
+	# continuity or strict monotonicty may be added
+end
+
+function isstrongnegation(fun)
+    # strict: x,y ∈ [0,1], x < y ⟹ ~x > ~y
+    # strong: ~~x == x (involutive)
+    x, y = sort(rand(2))
+    fun(0) == 1 &&
+        fun(1) == 0 &&
+        fun(x) > fun(y) &&
+        fun(fun(x)) == x
+end
+
+function isimplication(fun)
+    x, y, z = sort(rand(3))
+    fun(x, z) >= fun(y, z) &&                               # I1 ∀z ∈ [0,1]
+        fun(x, y) <= fun(x, z) &&                           # I2 ∀x ∈ [0,1]
+        fun(0, 0) == fun(1, 1) == 1 && fun(1, 0) == 0       # I3
+end
+
+"""
+Axiom adherence of an implication function
+
+`N` is a strong negation function, i.e. a fuzzy complement `~~x == x`.
+`T` is a left-continuous t-norm, defaults to nilpotent minimum
+
+Mas, M., Monserrat, M., Torrens, J., & Trillas, E. (2007). A survey on fuzzy implication functions. IEEE Transactions on fuzzy systems, 15(6), 1107-1121.
+"""
+function implicationproperties(I; negation = negate, tnorm = nilpotent_minimum)
+    x, y, z = sort(rand(4))
+    !isstrongnegation(negation) && @warn "negation function is not strong. Property requirements 8, 10, 12"
+    N, T = negation, tnorm
+    (
+        M₁ = I(x, y) >= I(y, z),                    # monotonocity in 1st arg           I1
+        M₂ = I(x, y) <= I(x, z),                    # monotonocity in 2nd arg           I2
+        CC = I(0, 0) == I(1, 1) == I(1, 0) + 1 == 1,# {0,1}² coincides p ⟹ q ≡ ¬p ∨ q  I3
+        DF = I(0, x) == 1,                          # dominance of falsity              I4
+        NP = I(1, x) == x,                          # left neutrality principle         I5
+        ID = I(x, x) == 1,                          # identity property                 I6
+        EP = I(x, I(y, z)) == I(y, I(x, z)),        # exchange property                 I7
+        CPN = I(x, y) == I(N(y), N(x)),             # contraposition to strong negation I8
+        OP = I(x, y) == 1 && I(y, x) != 1,          # ordering property                 I9
+        SN = isstrongnegation(x -> I(x, 0)),        # strong negation                   I10
+        MP = T(x, I(x, y)) <= y,                    # modus ponens                      I11
+        unknown = I(x, N(x)) == N(x),               # --                                I12
+        BC = I(x, y) == 1 && I(y, x) != 1           # boundary condition                I13
+        # add: distributivity properties, laws of importation
+    )
+end
+#endregion
+
 
 # helpers
 none() = nothing
@@ -31,17 +111,17 @@ Zadeh       = Logic(negate, min, max, I_Gödel);                               #
 Drastic     = Logic(negate, drastic_product, drastic_sum, I_Drastic);         #   -       0             1             x -> x < 1 ? 2 - x : 0
 Product     = Logic(negate, algebraic_product, algebraic_sum, I_Goguen);      #   -       1             1             x -> -log(x)
 Łukasiewicz = Logic(negate, bounded_difference, bounded_sum, I_Łukasiewicz);  #   1       1             1             x -> 1 - x
-Fodor       = Logic(negate, T_Fodor, S_Fodor, I_Fodor);                       #   1       0             1             -
+Fodor       = Logic(negate, nilpotent_minimum, nilpotent_maximum, I_Fodor);   #   1       0             1             -
 # Fodor & Roubens, page 20)
 function Frank(s)
     0 < s < Inf || throw("improper Frank domain")                               #   1       1             1             x -> log((s - 1) / (s^x - 1))
     if s == 0 Zadeh
     elseif s == 1 Product
     elseif isinf(s) Łukasiewicz
-    else 
+    else
         T = (x, y) -> log(1 + (s^x - 1) * (s^y - 1) / (s - 1)) / log(s)
         Logic(
-            negate, 
+            negate,
             T,
             (x, y) -> 1 - T(1 - x, 1 - y),
             (x, y) -> x <= y ? 1 : log(1 + (s - 1) * (s^y - 1) / (s^x - 1)) / log(s)
@@ -59,7 +139,7 @@ function Hamacher(;α = nothing, β = 0, γ = 0)                                
     )
 end;
 # make into family using standard negation and DeMorgan triplet associated t-conorm
-function Schweizer_Sklar(p)                                                     #   1       p < +∞      p > -∞        x -> p == 0 ? -log(x) : (1 - x^p) / p   0<p<+∞   
+function Schweizer_Sklar(p)                                                     #   1       p < +∞      p > -∞        x -> p == 0 ? -log(x) : (1 - x^p) / p   0<p<+∞
     if p == -Inf Zadeh
     elseif p == 0 Product
     elseif isinf(p) Drastic
@@ -141,7 +221,7 @@ function Dubois_Prade(p)                                                        
             negate,
             T,
             (x, y) -> 1 - T(1 - x, 1 - y),
-            (x, y) -> x <= y ? 1 : max(p / x, 1) * y  
+            (x, y) -> x <= y ? 1 : max(p / x, 1) * y
         )
     end
 end;

@@ -1,7 +1,7 @@
 using FuzzySystems.FuzzyLogic: COG, BOA, MOM, SOM, LOM
 
 @testset "defuzzification" begin
-    mf = trapezoid(2.0, 2.5, 3.0, 4.5)
+    mf = Trapezoid(2.0, 2.5, 3.0, 4.5)
     𝒰 = 0:.1:5
     @test COG(𝒰, mf) ≈ 3.055555555
     @test BOA(𝒰, mf) == 3.0
