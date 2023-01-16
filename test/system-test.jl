@@ -1,4 +1,4 @@
-using FuzzySystems: @var, @rules, Mamdani, predict
+using FuzzySystems: Mamdani, predict
 
 @testset "Mamdani" begin
     in_vals = (7.0, 8);

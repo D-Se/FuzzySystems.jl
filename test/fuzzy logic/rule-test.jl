@@ -1,21 +1,17 @@
-using FuzzySystems.FuzzyLogic: @var, @rule, @rules, Rule
-using FuzzySystems.FuzzyLogic: Trapezoid, Triangular, nilpotent_minimum
-
 want(op = nothing) = isnothing(op) ? Rule((:b, :c), :a) : Rule((:b, :c), :a, op)
 @testset "Rule & macros" begin
 
     @testset "Rule" begin
-
         @test want("MAX")   == want(maximum)
         @test want(:MAX)    == want(maximum)
         @test want(:min)    == want()
+        @test length(want()) == (2, 1)
     end
 
     @testset "@rule" begin
         @test want() == @rule       a v1 = b v2 & c v3
         @test want() == @rule       a    = b    & c
         @test want() == @rule [MIN] a    = b    & c
-
     end
 
     @testset "@rules" begin
@@ -44,7 +40,5 @@ want(op = nothing) = isnothing(op) ? Rule((:b, :c), :a) : Rule((:b, :c), :a, op)
     @testset "@var" begin
         @test (@var {x: Q 0 0 2 4}) == Dict(:x => Trapezoid(0, 0, 2, 4))
         @test (@var {x: Q .3 0 2 4}) == Dict(:x => Trapezoid(.3, 0, 2, 4))
-
     end
-
 end
