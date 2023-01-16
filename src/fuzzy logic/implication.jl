@@ -19,19 +19,17 @@ drastic(x, y)        = x == 1 && y == 0 ? zero(x) : one(x)
 # yagerS(x, y, p)      = min(((1 - x)^p + y^p)^(1/p), 1)
 # yagerR(x, y, p)      = x <= y ? 1 : 1 - ((1 - y)^p - (1 - x)^p)^(1/p)
 
-# reductivity, continuity and approximation properties.
-
 # https://arxiv.org/pdf/2002.06100.pdf
 # b0 controls the position of the sigmoidal curve and s controls the ‘spread’ of the curve.
-# I is an implication function
-function sigmoidal(I, x, y, s, b₀)
+
+function sigmoidal(→, x, y, s, b₀)
     @assert s > 0
     σ(x) = 1 / (1 + exp(x))
     if b₀ ≡ -0.5
-        (1 / (exp(.5s) - 1)) * ((1 + exp(.5s)) * σ(s * (I(x, y) - .5)) - 1)
+        (1 / (exp(.5s) - 1)) * ((1 + exp(.5s)) * σ(s * (→(x, y) - .5)) - 1)
     else
         eₛᵦ = exp(-s * (1 + b₀))
         eᵦₛ = exp(-b₀ * s)
-        ((1 + eₛᵦ) / (eᵦₛ - eₛᵦ)) * ((1 + eᵦₛ) * σ(s*(I(x, y) + b₀)) - 1)
+        ((1 + eₛᵦ) / (eᵦₛ - eₛᵦ)) * ((1 + eᵦₛ) * σ(s*(→(x, y) + b₀)) - 1)
     end
 end

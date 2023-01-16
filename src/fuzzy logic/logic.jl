@@ -1,5 +1,3 @@
-# A fuzzy algebra is ...
-
 struct Logic
     N::Function # negation
     T::Function # t-norm
@@ -130,7 +128,7 @@ Drastic     = Logic(negate, ∏_drastic, ∑_drastic, drastic)
 Product     = Logic(negate, ∏_algebraic, ∑_algebraic, goguen)
 Łukasiewicz = Logic(negate, bounded_difference, ∑_bounded, łukasiewicz)
 Fodor       = Logic(negate, nilpotent_minimum, nilpotent_maximum, fodor)
-# Fodor & Roubens, page 20)
+
 function Frank(s)
     0 < s < Inf || throw("improper Frank domain")
     if s == 0 Zadeh
@@ -157,7 +155,7 @@ function Hamacher(;α = nothing, β = 0, γ = 0)
         (x, y) -> x <= y ? 1 : (-α*x*y + α*y + x*y) / (-α*x*y + α*y + x*y + x - y)
     )
 end
-# make into family using standard negation and DeMorgan triplet associated t-conorm
+
 function Schweizer_Sklar(p)
     if p == -Inf Zadeh
     elseif p == 0 Product
@@ -176,6 +174,7 @@ function Schweizer_Sklar(p)
         )
     end
 end
+
 function Yager(p)
     p < 0 && throw("invalid Yager parameter")
     if p == 0 Drastic
@@ -189,6 +188,7 @@ function Yager(p)
         )
     end
 end
+
 function Dombi(p)
     p < 0 && throw("invalid Dombi parameter")
     if p == 0 Drastic
@@ -203,6 +203,7 @@ function Dombi(p)
         )
     end
 end
+
 function Aczel_Alsina(p)
     p < 0 && throw("Invalid Aczel_Alsina parameters")
     if p == 0 Drastic
@@ -231,6 +232,7 @@ function Sugeno_Weber(p)
         )
     end
 end
+
 function Dubois_Prade(p)
     p < 0 || p > 1 && throw("Invalid Dubois_Prade parameter")
     if p == 0 Zadeh

@@ -17,7 +17,6 @@ The following are semantically equivalent
 
 See also [`@rule`](@ref), [`@rules`](@ref), [`μ`](@ref) and [`firing`](@ref)
 """
-
 struct Rule
     in::Tuple{Vararg{Symbol}}
     out::Symbol

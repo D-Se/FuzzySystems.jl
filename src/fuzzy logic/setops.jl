@@ -1,4 +1,3 @@
-
 #region T-norm: intersection of fuzzy sets (OR, |). Triangular-norm.
 
 # min(x...)                 = Base.min(x...) # Gödel
