@@ -1,4 +1,4 @@
-using FuzzySystems.FuzzyLogic: COG, BOA, MOM, SOM, LOM
+using .FuzzyLogic: COG, BOA, MOM, SOM, LOM
 
 @testset "defuzzification" begin
     mf = Trapezoid(2.0, 2.5, 3.0, 4.5)

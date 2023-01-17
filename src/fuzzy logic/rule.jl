@@ -1,19 +1,3 @@
-# (unexported) function aliases
-
-const MF_ALIAS = Dict(
-    :G => Gaussian, :g => Gaussian, :gauss => Gaussian, :gaussmf => Gaussian,
-    :B => Bell, :b => Bell, :bell => Bell, :gbell => Bell, :gbellmf => Bell,
-    :T => Triangular, :triangle => Triangular, :trimf => Triangular,
-    :Q => Trapezoid, :trap => Trapezoid, :trapmf => Trapezoid,
-    :S => Sigmoid, :s => Sigmoid, :sig => Sigmoid, :sigmf => Sigmoid,
-    :LS => Lins, :ls => Lins,
-    :LZ => Linz, :lz => Linz,
-    :single => Singleton,
-    :π => Pi,
-    :SS => S_shape, :ss => S_shape, :smf => S_shape,
-    :ZS => Z_shape, :zs => Z_shape, :zmf => Z_shape
-)
-
 """
     Rule(in::Tuple{Vararg{Symbol}}, out::Symbol, op::Union{Function, String, Symbol})
 A structure storing fuzzy rule components.
@@ -33,10 +17,6 @@ The following are semantically equivalent
 
 See also [`@rule`](@ref), [`@rules`](@ref), [`μ`](@ref) and [`firing`](@ref)
 """
-
-
-T = Tuple{Vararg{Symbol}}
-
 struct Rule
     in::Tuple{Vararg{Symbol}}
     out::Symbol
@@ -44,6 +24,7 @@ struct Rule
 end
 Rule(in::Tuple{Vararg{Symbol}}, out::Symbol, op::Union{Symbol, String}) = Rule(in, out, OP_ALIAS[Symbol(op)])
 Rule(in::Tuple{Vararg{Symbol}}, out::Symbol) = Rule(in, out, Base.minimum)
+Base.length(collection::Rule) = (length(collection.in), 1)
 
 """
     @rule(expr...)

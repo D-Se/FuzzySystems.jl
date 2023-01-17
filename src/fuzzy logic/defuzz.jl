@@ -1,9 +1,3 @@
-#=
- TODO:
-    Center of Sums            :COS
-    First of Maxima           :FOM
-    Center of Area            :COA
-=#
 """
     defuzz(firing_strength, fis, method)
 Obtain a crisp value from degrees of memberships of ``x``.
@@ -21,11 +15,6 @@ method one of
 
 See also [`μ`](@ref).
 """
-#= function defuzz end
-
-function defuzz(firing_strength, fis, method)
-    method(firing_strength, fis)
-end =#
 
 function COG(𝒰, mf)
     ∑moment_area = ∑area = 0.0
