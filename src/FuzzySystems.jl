@@ -7,7 +7,7 @@ include("fuzzy logic/FuzzyLogic.jl")
 @reexport using .FuzzyLogic: MF, WTAV
 
 include("system.jl")
-
+include("_documentation.jl")
 export
     Mamdani, predict
 

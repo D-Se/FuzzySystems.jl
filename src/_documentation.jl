@@ -1,4 +1,4 @@
-"""
+@doc """
     Rule(in::Tuple{Vararg{Symbol}}, out::Symbol, op::Union{Function, String, Symbol})
 A structure storing fuzzy rule components.
 
@@ -15,12 +15,12 @@ The following are semantically equivalent
 - `y = x₁ & x₂`
 
 
-See also [`@rule`](@ref), [`@rules`](@ref), [`μ`](@ref) and [`firing`](@ref)
+See also [`@rule`](@ref), [`@rules`](@ref) and [`μ`](@ref)
 """
 Rule
 
-"""
-@rule(expr...)
+@doc """
+    @rule(expr...)
 Create a fuzzy [`Rule`](@ref).
 
 # Examples
@@ -37,9 +37,9 @@ average = good
 }
 ```
 """
-rule
+:(FuzzySystems.@rule)
 
-"""
+@doc """
 @rule(expr...)
 Create a fuzzy [`Rule`](@ref).
 
@@ -52,14 +52,14 @@ julia> @rule [bounded_sum] cheap = poor & bad
 Rule((:poor, :bad), :cheap, "MAX")
 
 julia> @rules {
-cheap = poor & bad
-average = good
+    cheap = poor & bad
+    average = good
 }
 ```
 """
-rules
+:(FuzzySystems.@rules)
 
-"""
+@doc """
     @var(exprs...)
 Syntax shortcut for making membership dictionaries.
 
@@ -74,35 +74,7 @@ Dict{Symbol, MF} with 2 entries:
     :good => T|₃₌⁵⁼₇₌|
 ```
 """
-var
-
-"""
-    μ(x, mf::membership_function)
- Obtain degrees of membership ``μ`` for a given crisp input ``x``
-
-``μ_{triangular}(x)= max(min(\\frac{x\\,-\\,l}{t\\,-\\,l}, \\frac{r\\,-\\,x}{t\\,-\\,r}), 0)``, on left, top and right vertices \\
-``μ_{trapezoid}(x)= max(min(\\frac{x\\,-\\,lb}{lt\\,-\\,lb}, 1, \\frac{rb\\,-\\,x}{rb\\,-\\,rt}), 0)`` on bottom and top vertices \\
-
-``μ_{gaussian}(x) = e^{-\\frac{1}{2}(\\frac{x - t}{σ})^2}`` where `σ` is variance and `t` is the mean of the distribution \\
-``μ_{bell}(x) = \\frac{1}{1 + |1 + \\frac{x - t}{a}|^{2b}}`` where `l`, `t` and `r` and left, top and right points of the curve \\
-
-``μ_{sigmoid}(x,a,c)= \\frac{1}{1 + e^{-a(x\\,-\\,c)}}`` where `a` is the width of transition area, `c` is the inflextion point\\
-
-See also [`defuzz`](@ref).
-"""
-μ
-
-"""
-    mf(s::Symbol, args...)
-
-Construct a membership function using an alias.
-# Example
-```jldoctest
-julia> mf(:G, 0, 1) # gaussian membership
-G|⁰⁼⁄₁₌|
-```
-"""
-mf
+:(FuzzySystems.@var)
 
 """
     defuzz(firing_strength, fis, method)
@@ -121,4 +93,20 @@ method one of
 
 See also [`μ`](@ref).
 """
-defuzz
+function defuzz end
+
+"""
+    μ(x, mf::membership_function)
+ Obtain degrees of membership ``μ`` for a given crisp input ``x``
+
+``μ_{triangular}(x)= max(min(\\frac{x\\,-\\,l}{t\\,-\\,l}, \\frac{r\\,-\\,x}{t\\,-\\,r}), 0)``, on left, top and right vertices \\
+``μ_{trapezoid}(x)= max(min(\\frac{x\\,-\\,lb}{lt\\,-\\,lb}, 1, \\frac{rb\\,-\\,x}{rb\\,-\\,rt}), 0)`` on bottom and top vertices \\
+
+``μ_{gaussian}(x) = e^{-\\frac{1}{2}(\\frac{x - t}{σ})^2}`` where `σ` is variance and `t` is the mean of the distribution \\
+``μ_{bell}(x) = \\frac{1}{1 + |1 + \\frac{x - t}{a}|^{2b}}`` where `l`, `t` and `r` and left, top and right points of the curve \\
+
+``μ_{sigmoid}(x,a,c)= \\frac{1}{1 + e^{-a(x\\,-\\,c)}}`` where `a` is the width of transition area, `c` is the inflextion point\\
+
+See also [`defuzz`](@ref).
+"""
+μ

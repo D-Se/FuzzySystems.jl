@@ -9,9 +9,7 @@ foreach(include, (
     "membership.jl",
     "rule.jl",
     "defuzz.jl",
-    "logic.jl",
-
-    "_documentation.jl"
+    "logic.jl"
 ))
 
 export
