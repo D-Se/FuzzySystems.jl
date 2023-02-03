@@ -37,7 +37,7 @@ average = good
 }
 ```
 """
-:(FuzzySystems.@rule)
+:(@rule)
 
 @doc """
 @rule(expr...)
@@ -57,7 +57,7 @@ julia> @rules {
 }
 ```
 """
-:(FuzzySystems.@rules)
+:(@rules)
 
 @doc """
     @var(exprs...)
@@ -74,7 +74,7 @@ Dict{Symbol, MF} with 2 entries:
     :good => T|₃₌⁵⁼₇₌|
 ```
 """
-:(FuzzySystems.@var)
+:(@var)
 
 """
     defuzz(firing_strength, fis, method)
