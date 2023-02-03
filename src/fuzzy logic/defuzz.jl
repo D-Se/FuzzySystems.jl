@@ -1,21 +1,3 @@
-"""
-    defuzz(firing_strength, fis, method)
-Obtain a crisp value from degrees of memberships of ``x``.
-
-universe of discourse 𝒰, the range of interest.
-mf the membership function
-method one of
-- Center of Gravity (Centroid)  COG
-- Bisector of Area              BOA
-- Weighted Average              WAM
-- First of Maxima               FOM
-- Last of Maxima                LOM
-- Mean of Maxima                MOM
-- Smallest of Maxima            SOM
-
-See also [`μ`](@ref).
-"""
-
 function COG(𝒰, mf)
     ∑moment_area = ∑area = 0.0
     ϵ = 2^-52

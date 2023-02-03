@@ -1,14 +1,17 @@
 module FuzzyLogic
 
 foreach(include, (
-    "utils.jl",
+    "_utils.jl",
+
     "exceptions.jl",
     "setops.jl",
     "implication.jl",
     "membership.jl",
     "rule.jl",
     "defuzz.jl",
-    "logic.jl"
+    "logic.jl",
+
+    "_documentation.jl"
 ))
 
 export

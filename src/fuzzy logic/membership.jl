@@ -30,21 +30,6 @@ end
 @interface Z_shape      a b
 # @interface Piece        a b c
 
-"""
-    μ(x, mf::membership_function)
- Obtain degrees of membership ``μ`` for a given crisp input ``x``
-
-``μ_{triangular}(x)= max(min(\\frac{x\\,-\\,l}{t\\,-\\,l}, \\frac{r\\,-\\,x}{t\\,-\\,r}), 0)``, on left, top and right vertices \\
-``μ_{trapezoid}(x)= max(min(\\frac{x\\,-\\,lb}{lt\\,-\\,lb}, 1, \\frac{rb\\,-\\,x}{rb\\,-\\,rt}), 0)`` on bottom and top vertices \\
-
-``μ_{gaussian}(x) = e^{-\\frac{1}{2}(\\frac{x - t}{σ})^2}`` where `σ` is variance and `t` is the mean of the distribution \\
-``μ_{bell}(x) = \\frac{1}{1 + |1 + \\frac{x - t}{a}|^{2b}}`` where `l`, `t` and `r` and left, top and right points of the curve \\
-
-``μ_{sigmoid}(x,a,c)= \\frac{1}{1 + e^{-a(x\\,-\\,c)}}`` where `a` is the width of transition area, `c` is the inflextion point\\
-
-See also [`defuzz`](@ref).
-"""
-function μ end
 μ(x, mf::Gaussian)   = @fastmath exp(-(x - mf.t)^2 / 2mf.σ^2)
 μ(x, mf::Bell)       = 1 / (1 + abs((x - mf.t) / mf.l)^2mf.r)
 μ(x, mf::Triangular) = max(min((x - mf.l) / (mf.t - mf.l), (mf.r - x) / (mf.r - mf.t)), 0.0)
@@ -125,16 +110,6 @@ const MF_ALIAS = Dict(
     :ZS => Z_shape, :zs => Z_shape, :zmf => Z_shape
 )
 
-"""
-    mf(s::Symbol, args...)
-
-Construct a membership function using an alias.
-# Example
-```jldoctest
-julia> mf(:G, 0, 1) # gaussian membership
-G|⁰⁼⁄₁₌|
-```
-"""
 mf(s::Symbol, args...) = MF_ALIAS[s](args...)
 
 # Custom print methods
