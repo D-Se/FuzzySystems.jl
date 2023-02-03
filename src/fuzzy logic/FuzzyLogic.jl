@@ -34,8 +34,8 @@ export
     μ,
 
     # syntax convenience macros
-    Rule, @rule, @rules, @var
+    Rule, @rule, @rules, @var,
 
     # logic & properties
-    istnorm, issnorm, isimplication, isstrongnegation, isdemorgantriplet
+    istnorm, issnorm, isimplication, isstrongnegation, isdemorgantriplet, implicationproperties
 end

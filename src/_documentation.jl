@@ -110,3 +110,25 @@ function defuzz end
 See also [`defuzz`](@ref).
 """
 μ
+
+"""
+Axiom adherence of an implication function
+
+`N` is a strong negation function, i.e. a fuzzy complement `~~x == x`.
+`T` is a left-continuous t-norm, defaults to nilpotent minimum
+
+Mas, M., Monserrat, M., Torrens, J., & Trillas, E. (2007). A survey on fuzzy implication functions. IEEE Transactions on fuzzy systems, 15(6), 1107-1121.
+"""
+implicationproperties
+
+"""
+Is a fuzzy intersection (t-norm, OR) of the form `[0,1]² -> [0,1]`
+1) associative, 2) monotone, 3) communicative and 4) bounded?
+"""
+istnorm
+
+"""
+is a fuzzy union (s-norm, AND) of the form `[0,1]² -> [0,1]`
+1) associative, 2) monotone, 3) communicative and 4) bounded?
+"""
+issnorm

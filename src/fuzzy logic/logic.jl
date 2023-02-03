@@ -38,10 +38,6 @@ end =#
     end
 end)() |> eval
 
-"""
-is a fuzzy union (s-norm, AND) of the form `[0,1]² -> [0,1]`
-1) associative, 2) monotone, 3) communicative and 4) bounded?
-"""
 function issnorm(⊥)
     for (x, y, z) in zip(𝓍, 𝓎, 𝓏)
         ⊥(x, 0) ≈ x &&                     # identity
@@ -53,10 +49,6 @@ function issnorm(⊥)
     return true
 end
 
-"""
-Is a fuzzy intersection (t-norm, OR) of the form `[0,1]² -> [0,1]`
-1) associative, 2) monotone, 3) communicative and 4) bounded?
-"""
 function istnorm(⊤)
     for (x, y, z) in zip(𝓍, 𝓎, 𝓏)
         ⊤(x, 1) ≈ x   &&                  # identity
@@ -96,14 +88,6 @@ function isimplication(→)
     return true
 end
 
-"""
-Axiom adherence of an implication function
-
-`N` is a strong negation function, i.e. a fuzzy complement `~~x == x`.
-`T` is a left-continuous t-norm, defaults to nilpotent minimum
-
-Mas, M., Monserrat, M., Torrens, J., & Trillas, E. (2007). A survey on fuzzy implication functions. IEEE Transactions on fuzzy systems, 15(6), 1107-1121.
-"""
 function implicationproperties(I; N = negate)
     isimplication(I) || throw("Not an implication function.")
     !isstrongnegation(N) && @warn "negation function is not strong."
