@@ -25,6 +25,3 @@ function ¦(x, case)
     end
     case == 1 ? sup(x) : case == 2 ? sub(x) : x
 end
-
-collapse(string) = reduce((i, j) -> i * " " * j, string)
-collapse(string, op) = reduce((i, j) -> i * " $op " * j, string)
