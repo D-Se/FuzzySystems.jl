@@ -4,7 +4,7 @@ using Reexport
 # Fuzzy logic fundamentals
 include("fuzzy logic/FuzzyLogic.jl")
 @reexport using .FuzzyLogic
-@reexport using .FuzzyLogic: MF, WTAV
+@reexport using .FuzzyLogic: AbstractMember, WTAV
 
 include("system.jl")
 include("_documentation.jl")

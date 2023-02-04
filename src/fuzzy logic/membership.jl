@@ -1,11 +1,11 @@
 # membership functions represent a degree of truth.
-abstract type MF end
+abstract type AbstractMember end
 
 macro interface(name, vars...)
     expr = Expr(:block)
     append!(expr.args, map(var -> :($var::Float64), vars))
     quote
-        struct $name <: MF
+        struct $name <: AbstractMember
             $expr
         end
         # membership functions act as scalars

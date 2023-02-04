@@ -26,8 +26,8 @@ mutable struct FuzzySystem <: AbstractFuzzySystem
 end
 
 struct Mamdani
-    input_dict::Tuple{Vararg{Dict{Symbol, MF}}}
-    output_dict::Dict{Symbol, MF}
+    input_dict::Tuple{Vararg{Dict{Symbol, AbstractMember}}}
+    output_dict::Dict{Symbol, AbstractMember}
     rules::Tuple{Vararg{Rule}}
 end
 
