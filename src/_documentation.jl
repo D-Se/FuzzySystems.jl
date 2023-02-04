@@ -1,8 +1,45 @@
-@doc """
-    Rule(in::Tuple{Vararg{Symbol}}, out::Symbol, op::Union{Function, String, Symbol})
+"""
+Fuzzy systems approximate human reasoning using linguistic variables and many-valued logic.
+
+These can be used for regression and classification problems.
+Generate a set of [`rules`](@ref FuzzySystems.FuzzyLogic.Rule).
+
+* Automatic rule generation
+  - Gradient descent
+  - Neural networks
+  - Genetic algorithm
+  - Cluster
+
+"""
+FuzzySystems
+
+"""
+    AbstractMember
+
+An abstract type interfacing to fuzzy membership functions.
+
+Each concrete subtype defines ``μ_{Ã}(x):`` 𝒰 ↦ [0, 1], a mapping of value x from
+fuzzy set Ã in universe of discourse 𝒰 to the unit interval of truth values.
+
+`FuzzySystems.jl` ships the following concrete subtypes, :
+
+| `Shape <: AbstractMember`     |  Definition |
+|:--------  |:------------|
+| Triangular| ``max(min(\\frac{x\\,-\\,l}{t\\,-\\,l}, \\frac{r\\,-\\,x}{t\\,-\\,r}), 0)`` |
+| Trapezoid | ``max(min(\\frac{x\\,-\\,lb}{lt\\,-\\,lb}, 1, \\frac{rb\\,-\\,x}{rb\\,-\\,rt}), 0)`` |
+| Gaussian  | ``e^{-\\frac{1}{2}(\\frac{x - t}{σ})^2}`` |
+| Bell      | ``\\frac{1}{1 + \\|1 + \\frac{x - t}{a}\\|^{2b}}`` |
+| Sigmoid   | ``\\frac{1}{1 + e^{-a(x\\,-\\,c)}}`` |
+
+See also [`μ`](@ref) for membership degrees.
+"""
+AbstractMember
+
+"""
+    Rule(in::Tuple{Vararg{Symbol}}, out::Symbol, op::Function)
 A structure storing fuzzy rule components.
 
-Fuzzy rules map `in` to an `out`` by `&` or `|` ops.
+Fuzzy rules map `in` to an `out` by `&` or `|` ops.
 Each `in`` must be unique, and map to an unambiguous `out`.
 
 |arg|alias|
@@ -14,12 +51,11 @@ The following are semantically equivalent
 - `IF x₁ AND x₂ THEN y`
 - `y = x₁ & x₂`
 
-
 See also [`@rule`](@ref), [`@rules`](@ref) and [`μ`](@ref)
 """
 Rule
 
-@doc """
+"""
     @rule(expr...)
 Create a fuzzy [`Rule`](@ref).
 
@@ -37,27 +73,7 @@ average = good
 }
 ```
 """
-:(@rule)
-
-@doc """
-@rule(expr...)
-Create a fuzzy [`Rule`](@ref).
-
-# Examples
-```jldoctest
-julia> @rule cheap tip = poor service & bad food
-Rule((:poor, :bad), :cheap, "MAX")
-
-julia> @rule [bounded_sum] cheap = poor & bad
-Rule((:poor, :bad), :cheap, "MAX")
-
-julia> @rules {
-    cheap = poor & bad
-    average = good
-}
-```
-"""
-:(@rules)
+:(@rule), :(@rules)
 
 @doc """
     @var(exprs...)
@@ -69,7 +85,7 @@ julia> @var {
     poor     : Q 0 0 2 4
     good     : T 3 5 7
 }
-Dict{Symbol, MF} with 2 entries:
+Dict{Symbol, AbstractMember} with 2 entries:
     :excellent => Q|₆₌⁸⁼¹⁼₁₌|
     :good => T|₃₌⁵⁼₇₌|
 ```
@@ -95,24 +111,23 @@ See also [`μ`](@ref).
 """
 function defuzz end
 
-"""
+@doc raw"""
     μ(x, mf::membership_function)
- Obtain degrees of membership ``μ`` for a given crisp input ``x``
+Obtain degrees of membership `μ` for crisp input `x` in shape `mf`.
 
-``μ_{triangular}(x)= max(min(\\frac{x\\,-\\,l}{t\\,-\\,l}, \\frac{r\\,-\\,x}{t\\,-\\,r}), 0)``, on left, top and right vertices \\
-``μ_{trapezoid}(x)= max(min(\\frac{x\\,-\\,lb}{lt\\,-\\,lb}, 1, \\frac{rb\\,-\\,x}{rb\\,-\\,rt}), 0)`` on bottom and top vertices \\
+# Arguments
+- Triangular - left `l`, top `t` and right `r` vertices (corners).
+- Trapezoid - left bottom `lb`, left top `lt`, right top `rt`, right botom `rb` vertices
+- Gaussian -  variance `σ` and mean `t`
+- Bell - left `l`, top `t` and right `r`` points of the curve
+- Sigmoid-  width of transition area `a` and inflextion point `c`
 
-``μ_{gaussian}(x) = e^{-\\frac{1}{2}(\\frac{x - t}{σ})^2}`` where `σ` is variance and `t` is the mean of the distribution \\
-``μ_{bell}(x) = \\frac{1}{1 + |1 + \\frac{x - t}{a}|^{2b}}`` where `l`, `t` and `r` and left, top and right points of the curve \\
-
-``μ_{sigmoid}(x,a,c)= \\frac{1}{1 + e^{-a(x\\,-\\,c)}}`` where `a` is the width of transition area, `c` is the inflextion point\\
-
-See also [`defuzz`](@ref).
+See also [`AbstractMember`](@ref), [`defuzz`](@ref).
 """
 μ
 
 """
-Axiom adherence of an implication function
+Test the axiom adherence of an implication function.
 
 `N` is a strong negation function, i.e. a fuzzy complement `~~x == x`.
 `T` is a left-continuous t-norm, defaults to nilpotent minimum
@@ -122,13 +137,16 @@ Mas, M., Monserrat, M., Torrens, J., & Trillas, E. (2007). A survey on fuzzy imp
 implicationproperties
 
 """
-Is a fuzzy intersection (t-norm, OR) of the form `[0,1]² -> [0,1]`
+Is a t-norm (t-intersection, OR) or s-norm (union, AND) of the form `[0,1]² -> [0,1]`
 1) associative, 2) monotone, 3) communicative and 4) bounded?
 """
-istnorm
+istnorm, issnorm
 
-"""
-is a fuzzy union (s-norm, AND) of the form `[0,1]² -> [0,1]`
-1) associative, 2) monotone, 3) communicative and 4) bounded?
-"""
-issnorm
+
+function foldersize(dir=".")
+    size = 0
+    for (root, dirs, files) in walkdir(dir)
+        size += sum(map(filesize, joinpath.(root, files)))
+    end
+    return size
+end
