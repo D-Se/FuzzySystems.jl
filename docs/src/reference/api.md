@@ -1,4 +1,4 @@
 ```@autodocs
 Modules = [FuzzySystems]
-Order   = [:macro, :function, :type, :constant]
+Order   = [:module, :type, :macro, :function, :constant]
 ```
