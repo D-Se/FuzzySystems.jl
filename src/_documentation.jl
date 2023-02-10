@@ -14,6 +14,25 @@ Generate a set of [`rules`](@ref FuzzySystems.FuzzyLogic.Rule).
 FuzzySystems
 
 """
+    Logic(T::Function, S::Function, I::Function, N::Function)
+
+Definition of fuzzy set operations.
+- T-norm (intersection, |)
+- S-norm (union, &)
+- Negation (complement)
+
+Infinite combinations of ⟨ N, T, S ⟩ exist, all violating some properties of
+classical set theory.
+
+It is often desirable to work with ⟨ N, T, S ⟩ that preserve the duality, see
+[`isdemorgantriplet`](@ref) between intersections and unions in classical set theory.
+
+Averaging
+Modifying
+"""
+Logic
+
+"""
     AbstractMember
 
 An abstract type interfacing to fuzzy membership functions.
@@ -97,7 +116,6 @@ Dict{Symbol, AbstractMember} with 2 entries:
 Obtain a crisp value from degrees of memberships of ``x``.
 
 universe of discourse 𝒰, the range of interest.
-mf the membership function
 method one of
 - Center of Gravity (Centroid)  COG
 - Bisector of Area              BOA
@@ -111,7 +129,7 @@ See also [`μ`](@ref).
 """
 function defuzz end
 
-@doc raw"""
+"""
     μ(x, mf::membership_function)
 Obtain degrees of membership `μ` for crisp input `x` in shape `mf`.
 
@@ -127,26 +145,26 @@ See also [`AbstractMember`](@ref), [`defuzz`](@ref).
 μ
 
 """
+    implicationproperties(I; N = negate)
+
 Test the axiom adherence of an implication function.
 
 `N` is a strong negation function, i.e. a fuzzy complement `~~x == x`.
 `T` is a left-continuous t-norm, defaults to nilpotent minimum
 
-Mas, M., Monserrat, M., Torrens, J., & Trillas, E. (2007). A survey on fuzzy implication functions. IEEE Transactions on fuzzy systems, 15(6), 1107-1121.
+Mas et al. (2007). A survey on fuzzy implication functions. IEEE Transactions on fuzzy systems, 15(6), 1107-1121.
 """
 implicationproperties
 
 """
-Is a t-norm (t-intersection, OR) or s-norm (union, AND) of the form `[0,1]² -> [0,1]`
+Is a t-norm (intersection, OR) or s-norm (union, AND) of the form `[0,1]² -> [0,1]`
 1) associative, 2) monotone, 3) communicative and 4) bounded?
 """
 istnorm, issnorm
 
+"""
+    isdemorgantriplet(⊤::Function, ⊥::Function, ~::Function)
 
-function foldersize(dir=".")
-    size = 0
-    for (root, dirs, files) in walkdir(dir)
-        size += sum(map(filesize, joinpath.(root, files)))
-    end
-    return size
-end
+Check if duality between t-norm, s-norm and a complement is preserved.
+"""
+isdemorgantriplet
