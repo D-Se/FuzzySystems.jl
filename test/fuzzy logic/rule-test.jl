@@ -5,7 +5,8 @@ want(op = nothing) = isnothing(op) ? Rule((:b, :c), :a) : Rule((:b, :c), :a, op)
         @test want("MAX")   == want(maximum)
         @test want(:MAX)    == want(maximum)
         @test want(:min)    == want()
-        @test length(want()) == (2, 1)
+        @test length(want())== 2
+        @test size(want())  == (2, 1)
     end
 
     @testset "@rule" begin

@@ -3,17 +3,21 @@ struct Rule
     out::Symbol
     op::Function
 end
-
+Rule(in::Tuple{Vararg{Symbol}}, out::Symbol) = Rule(in, out, Base.minimum)
 function Rule(in::Tuple{Vararg{Symbol}}, out::Symbol, op::Union{Symbol, String})
     Rule(in, out, OP_ALIAS[Symbol(op)])
 end
-Rule(in::Tuple{Vararg{Symbol}}, out::Symbol) = Rule(in, out, Base.minimum)
-Base.length(collection::Rule) = (length(collection.in), 1)
+
+"Return the number of input variables in a fuzzy rule."
+Base.length(x::Rule) = length(x.in)
+Base.size(x::Rule) = (length(x.in), 1) # only 1 output supported
 
 macro rule(ex)    _rule(ex)                        end
 macro rule(ex...) _rule(ex...)                     end
 macro rules(ex)   Tuple(_rule(arg) for arg in ⋆ex) end
-macro var(ex) Dict{Symbol, AbstractMember}(x⋆1⋆2 => MF_ALIAS[x⋆1⋆3](x ⋆ (2,)...) for x in ⋆ex) end
+macro var(ex)
+    Dict{Symbol, AbstractMember}(x⋆1⋆2 => MF_ALIAS[x⋆1⋆3](x ⋆ (2,)...) for x in ⋆ex)
+end
 
 # helpers
 walk(expr::Expr)   = expr |> walk!([]) |> Tuple
