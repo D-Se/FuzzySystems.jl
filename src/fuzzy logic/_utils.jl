@@ -2,7 +2,7 @@ function sup(x)
     replace(
         x, "1" => "¹", "2" => "²", "3" => "³", "4" => "⁴",
         "5" => "⁵", "6" => "⁶", "7" => "⁷", "8" => "⁸", "9" => "⁹",
-        "0" => "⁰", "=" => "⁼", "-" => "⁻", "." => "·" # Greek Ano Teleia (U+0387)
+        "0" => "⁰", "=" => "⁼", "-" => "⁻", "." => "·" # U+0387
     )
 end
 
@@ -24,4 +24,19 @@ function ¦(x, case)
         x = isnothing(m) ? x : "." * m.match
     end
     case == 1 ? sup(x) : case == 2 ? sub(x) : x
+end
+
+macro switch(ex)
+    args = ex.args
+    e = Expr(:if, Expr(:call, :(==), :op, 1), Expr(:block, args[1]))
+    popfirst!(args)
+    n = 2
+    tgt = e.args
+    for op in args
+        temp = Expr(:elseif, Expr(:call, :(==), :op, n), Expr(:block, op))
+        push!(tgt, temp)
+        n += 1
+        tgt = tgt[3].args
+    end
+    quote $e end |> esc
 end
