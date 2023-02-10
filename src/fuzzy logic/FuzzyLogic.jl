@@ -1,18 +1,22 @@
 module FuzzyLogic
 
+import Base: !, &, |, typemin, typemax
 foreach(include, (
     "_utils.jl",
 
-    "exceptions.jl",
     "setops.jl",
     "implication.jl",
     "membership.jl",
     "rule.jl",
     "defuzz.jl",
-    "logic.jl"
+    "properties.jl",
+    "logic.jl",
+    "ish.jl"
 ))
 
 export
+    Logic, Ish, setlogic!, |, &, !,
+
     # membership structures
     Gaussian, Bell, Triangular, Trapezoid, Sigmoid,
     Lins, Linz, Singleton, Pi, Z_shape, S_shape,
