@@ -1,247 +1,186 @@
 struct Logic
+    T::Function # t-norm, intersection of fuzzy sets
+    S::Function # s-norm, union of fuzzy sets
+    I::Function # implication, fulfillment degree of a rule
     N::Function # negation
-    T::Function # t-norm
-    S::Function # s-norm
-    I::Function # implication function
 end
 
-#= """
-Define fuzzy set operations
-    logic(model, args...)
+negate(x) = one(x) - x
 
-Each `logic` is made up of basic (fuzzy) set operations.
+# Internal toggles to swap fuzzy backends for &, |, ⟹, ! ops.
+# Using fields ensures type stability and 0 allocations in ops.
+mutable struct OpConst δ::Int8 end
+const 𝑨𝑵𝑫   = OpConst(1)
+const 𝑶𝑹    = OpConst(1)
+const 𝑰𝑴𝑷𝑳𝒀 = OpConst(1)
+const 𝑵𝑶𝑻   = OpConst(1)
 
-"""
-function logic(model::Symbol, args...)
-    if length(args) > 0
-        eval(Symbol(model))(args)
-    else
-        eval(Symbol(model))
-    end
-end =#
-
-#region set operation properties
-# functions to verify and aid in the discovery of new set operators
-
-# internal constants for property checks - sample size is 499
-(function()
-    p = 0.001
-    ⬆ = 0+p:p:1-p
-    ⬇ = 1-p:-p:0+p
-
-    x = Tuple(⬆[⬆ .<= ⬇][2:end])
-    y = Tuple(⬆[⬆ .> ⬇])
-    quote
-        const 𝓍 = $x
-        const 𝓎 = $y
-        const 𝓏 = Tuple(μ.(-5+.02:.02:5-.02, Sigmoid(1, 0)))
-    end
-end)() |> eval
-
-function issnorm(⊥)
-    for (x, y, z) in zip(𝓍, 𝓎, 𝓏)
-        ⊥(x, 0) ≈ x &&                     # identity
-        ⊥(x, y) ≈ ⊥(y, x) && #&&              # communicativity
-        ⊥(x, ⊥(y, z)) ≈ ⊥(⊥(x, y), z) && # associativity
-        ⊥(z, x) <= ⊥(z, y) ||               # monotonicity
-        return false
-    end
-    return true
-end
-
-function istnorm(⊤)
-    for (x, y, z) in zip(𝓍, 𝓎, 𝓏)
-        ⊤(x, 1) ≈ x   &&                  # identity
-        ⊤(x, y) ≈ ⊤(y, x) &&              # communicativity
-        ⊤(x, ⊤(y, z)) ≈ ⊤(⊤(x, y), z) &&  # associativity
-        ⊤(z, x) <= ⊤(z, y) ||               # monotonicity
-        return false
-    end
-    return true
-end
-
-function isdemorgantriplet(⊤, ⊥, ~)
-    istnorm(⊤) && issnorm(⊥) && isstrongnegation(~) || return false
-    for (x, y) in zip(𝓍, 𝓎)
-        ⊥(x, y) ≈ ~(⊤(~(x), ~(y))) || return false
-    end
-    return true
-end
-
-function isstrongnegation(~)
-    # strict: x,y ∈ [0,1], x < y ⟹ ~x > ~y
-    ~(0) == 1 && ~(1) == 0 || return false
-    for (x, y, z) in zip(𝓍, 𝓎, 𝓏)
-        ~(x) > ~(y) && ~(~(z)) ≈ z || return false
-    end
-    return true
-end
-
-# sample size set low for test performance
-function isimplication(→)
-    →(0, 0) == →(1, 1) == 1 && →(1, 0) == 0 || return false
-    for (a, b, x) in zip(𝓍[1:19], 𝓍[2:20], 𝓏[2:20])    # strictly a .<= b
-        →(a, x) >= →(b, x) &&                            # monotonicity in 1st
-        →(x, a) <= →(x, b) ||                            # monotonicity in 2nd
-        return false
-    end
-    return true
-end
-
-function implicationproperties(I; N = negate)
-    isimplication(I) || throw("Not an implication function.")
-    !isstrongnegation(N) && @warn "negation function is not strong."
-    x, y, z = (𝓍[1:3])
-    isimplication(I) || throw("Not an implication function.")
-    (
-        true,                          # monotonocity in 1st arg
-        true,                          # monotonocity in 2nd arg
-        #true,                         # {0,1}² coincides p ⟹ q ≡ ¬p ∨ q
-        I(0, x) == 1,                  # dominance of falsity
-        I(1, y) == y,                  # left neutrality principle
-        I(x, x) == 1,                  # identity property
-        I(x, I(y, z)) == I(y, I(x, z)),# exchange property
-        I(x, y) == 1 && I(y, x) != 1,  # boundary condition
-        I(x, y) == I(N(y), N(x))       # contraposition to strong negation
+let
+    op_constants = Dict(
+        :Zadeh       => (1, 1, 1, 1),
+        :Drastic     => (2, 2, 2, 1),
+        :Product     => (3, 3, 3, 1),
+        :Łukasiewicz => (4, 4, 4, 1),
+        :Fodor       => (5, 5, 5, 1)
     )
+    global function setlogic!(name::Symbol)
+        n = op_constants[name]
+        global 𝑨𝑵𝑫.δ    = n[1]
+        global 𝑶𝑹.δ     = n[2]
+        global 𝑰𝑴𝑷𝑳𝒀.δ  = n[3]
+        #global 𝑵𝑶𝑻.δ    = n[4]
+    end
 end
-#endregion
 
-Zadeh       = Logic(negate, min, max, gödel)
-Drastic     = Logic(negate, ∏_drastic, ∑_drastic, drastic)
-Product     = Logic(negate, ∏_algebraic, ∑_algebraic, goguen)
-Łukasiewicz = Logic(negate, bounded_difference, ∑_bounded, łukasiewicz)
-Fodor       = Logic(negate, nilpotent_minimum, nilpotent_maximum, fodor)
+𝙕ᵗ          = Base.min
+𝙕ˢ          = Base.max
+𝙕ⁱ(x, y)    = x <= y ? one(x) : y # gödel
+𝙕ⁿ          = negate
+Zadeh = Logic(𝙕ᵗ, 𝙕ˢ, 𝙕ⁱ, 𝙕ⁿ)
 
-function Frank(s)
-    0 < s < Inf || throw("improper Frank domain")
-    if s == 0 Zadeh
-    elseif s == 1 Product
-    elseif isinf(s) Łukasiewicz
+𝘿ᵗ(x, y)    = isone(max(x, y))  ? min(x, y) : zero(x) # drastic product
+𝘿ˢ(x, y)    = iszero(min(x, y)) ? max(x, y) : one(x) # drastic sum
+𝘿ⁱ(x, y)    = x == 1 && y == 0  ? zero(x)   : one(x)
+𝘿ⁿ          = negate
+Drastic = Logic(𝘿ᵗ, 𝘿ˢ, 𝘿ⁱ, 𝘿ⁿ)
+
+𝙋ᵗ(x, y)    = x * y
+𝙋ˢ(x, y)    = (1 - x) * y + x
+𝙋ⁱ(x, y)    = x <= y ? one(x) : y / x
+𝙋ⁿ          = negate
+Product = Logic(𝙋ᵗ, 𝙋ˢ, 𝙋ⁱ, 𝙋ⁿ)
+
+𝙇ᵗ(x, y)    = max(0, x + y - 1) # bold intersection, bounded difference
+𝙇ˢ(x, y)    = min(1, x + y) # bounded sum
+𝙇ⁱ(x, y)    = min(one(x), 1 - x + y)
+𝙇ⁿ          = negate
+Łukasiewicz = Logic(𝙇ᵗ, 𝙇ˢ, 𝙇ⁱ, 𝙇ⁿ)
+
+𝙁ᵗ(x, y)    = x + y > 1 ? min(x, y) : zero(x) # nilpotent minimum
+𝙁ˢ(x, y)    = x + y < 1 ? max(x, y) : one(x) # nilpotent maximum
+𝙁ⁱ(x, y)    = x <= y ? one(x) : max(1 - x, y)
+𝙁ⁿ          = negate
+Fodor = Logic(𝙁ᵗ, 𝙁ˢ, 𝙁ⁱ, 𝙁ⁿ)
+
+# Parametric logic families
+
+function Frank(λ)
+    0 < λ < Inf || throw("improper Frank domain")
+    if λ == 0 Zadeh
+    elseif λ == 1 Product
+    elseif isinf(λ) Łukasiewicz
     else
-        T = (x, y) -> log(1 + (s^x - 1) * (s^y - 1) / (s - 1)) / log(s)
-        Logic(
-            negate,
-            T,
-            (x, y) -> 1 - T(1 - x, 1 - y),
-            (x, y) -> x <= y ? 1 : log(1 + (s - 1) * (s^y - 1) / (s^x - 1)) / log(s)
-        )
+        𝓕ᵗ(x, y) = log(1 + (λ^x - 1) * (λ^y - 1) / (λ - 1)) / log(λ)
+        𝓕ˢ(x, y) = 1 - 𝓕ᵗ(1 - x, 1 - y)
+        𝓕ⁱ(x, y) = x <= y ? 1 : log(1 + (λ - 1) * (λ^y - 1) / (λ^x - 1)) / log(λ)
+        𝓕ⁿ = negate
+        Logic(𝓕ᵗ, 𝓕ˢ, 𝓕ⁱ, 𝓕ⁿ)
     end
 end
 
 function Hamacher(;α = nothing, β = 0, γ = 0)
     if isnothing(α) α = (1 + β) / (1 + γ) end
     α < 0 || β < -1 || γ < -1 && throw("Invalid Hamacher parameter")
-    Logic(
-        x -> (1 - x) / (1 + γ * x),
-        (x, y) -> x * y == 0 ? 0 : x * y / (α + (1 - α) * (x + y - x * y)),
-        (x, y) -> (x + y + β*x*y - x*y) / (1 + β*x*y),
-        (x, y) -> x <= y ? 1 : (-α*x*y + α*y + x*y) / (-α*x*y + α*y + x*y + x - y)
-    )
+    𝓗ᵗ(x, y) = x * y == 0 ? 0 : x * y / (α + (1 - α) * (x + y - x * y))
+    𝓗ˢ(x, y) = (x + y + β*x*y - x*y) / (1 + β*x*y)
+    𝓗ⁱ(x, y) = x <= y ? 1 : (-α*x*y + α*y + x*y) / (-α*x*y + α*y + x*y + x - y)
+    𝓗ⁿ(x)    = (1 - x) / (1 + γ * x)
+    Logic(𝓗ᵗ, 𝓗ˢ, 𝓗ⁱ, 𝓗ⁿ)
 end
 
-function Schweizer_Sklar(p)
-    if p == -Inf Zadeh
-    elseif p == 0 Product
-    elseif isinf(p) Drastic
+function Schweizer_Sklar(λ)
+    if λ == -Inf Zadeh
+    elseif λ == 0 Product
+    elseif isinf(λ) Drastic
     else
-        T = if p < 0
-            (x, y) -> (x^p + y^p - 1) ^ (1/p)
+        𝓢𝓢ᵗ = if isone(λ)
+            𝙇ᵗ
+        elseif λ == -1
+            (x, y) -> (x * y) / (x + y - x * y)
         else
-            (x, y) -> (max(0, x^p + y^p - 1)) ^ (1/p)
+            (x, y) -> (max(0, x^λ + y^λ - 1)) ^ (1 / λ)
         end
-        Logic(
-            negate,
-            T,
-            (x, y) -> 1 - T(1 - x, 1 - y),
-            (x, y) -> x <= y ? 1 : (1 - x^p + y^p) ^ (1/p)
-        )
+        𝓢𝓢ˢ(x, y) = 1 - 𝓢𝓢ᵗ(1 - x, 1 - y)
+        𝓢𝓢ⁱ(x, y) = x <= y ? 1 : (1 - x^λ + y^λ) ^ (1 / λ)
+        𝓢𝓢ⁿ = negate
+        Logic(𝓢𝓢ᵗ, 𝓢𝓢ˢ, 𝓢𝓢ⁱ, 𝓢𝓢ⁿ)
     end
 end
 
-function Yager(p)
-    p < 0 && throw("invalid Yager parameter")
-    if p == 0 Drastic
-    elseif p == Inf Zadeh
+function Yager(λ)
+    λ < 0 && throw("invalid Yager lambda")
+    if λ == 0 Drastic
+    elseif λ == Inf Zadeh
     else
-        Logic(
-            negate,
-            (x, y) -> max(0, 1 - ((1 - x)^p + (1 - y)^p)^(1/p)),
-            (x, y) -> min(1, (x^p + y^p) ^ (1/p)),
-            (x, y) -> x <= y ? 1 : 1 - ((1 - y)^p - (1 - x)^p)^(1/p)
-        )
+        𝓨ᵗ(x, y) = max(0, 1 - ((1 - x)^λ + (1 - y)^λ)^(1/λ))
+        𝓨ˢ(x, y) = λ == 1 ? 𝙇ˢ(x, y) : min(1, (x^λ + y^λ) ^ (1 / λ))
+        𝓨ⁱ(x, y) =  x <= y ? 1 : 1 - ((1 - y)^λ - (1 - x)^λ)^(1 / λ)
+        𝓨ⁿ = negate
+        Logic(𝓨ᵗ, 𝓨ˢ, 𝓨ⁱ, 𝓨ⁿ)
     end
 end
 
-function Dombi(p)
-    p < 0 && throw("invalid Dombi parameter")
-    if p == 0 Drastic
-    elseif p == Inf Zadeh
+function Dombi(λ)
+    λ < 0 && throw("invalid Dombi parameter")
+    if λ == 0 Drastic
+    elseif λ == Inf Zadeh
     else
-        T(x, y) = x*y == 0 ? 0 : 1 / (1 + ((1 / x - 1)^p + (1 / y - 1)^p)^(1 / p))
-        Logic(
-            negate,
-            T,
-            (x, y) -> 1 - T(1 - x, 1 - y),
-            (x, y) -> x <= y ? 1 : 1 / (1 + ((1 / y - 1)^p - (1 / x - 1)^p)^(1/p))
-        )
+        𝓓ᵗ(x, y) = x*y == 0 ? 0 : 1 / (1 + ((1 / x - 1)^λ + (1 / y - 1)^λ)^(1 / λ))
+        𝓓ˢ(x, y) = 1 - 𝓓ᵗ(1 - x, 1 - y)
+        𝓓ⁱ(x, y) = x <= y ? 1 : 1 / (1 + ((1 / y - 1)^λ - (1 / x - 1)^λ)^(1 / λ))
+        𝓓ⁿ = negate
+        Logic(𝓓ᵗ, 𝓓ˢ, 𝓓ⁱ, 𝓓ⁿ)
     end
 end
 
-function Aczel_Alsina(p)
-    p < 0 && throw("Invalid Aczel_Alsina parameters")
-    if p == 0 Drastic
-    elseif p == Inf Zadeh
+function Aczel_Alsina(λ)
+    λ < 0 && throw("Invalid Aczel_Alsina parameters")
+    if λ == 0 Drastic
+    elseif λ == Inf Zadeh
     else
-        T(x, y) = exp(- (abs(log(x))^p + abs(log(y))^p))
-        Logic(
-            negate,
-            T,
-            (x, y) -> 1 - T(1 - x, 1 - y),
-            (x, y) -> x <= y ? 1 : exp(-((abs(log(y))^p - abs(log(x))^p))^(1/p))
-        )
+        𝓐𝓐ᵗ(x, y) = exp(- (abs(log(x))^λ + abs(log(y))^λ))
+        𝓐𝓐ˢ(x, y) = 1 - 𝓐𝓐ᵗ(1 - x, 1 - y)
+        𝓐𝓐ⁱ(x, y) = x <= y ? 1 : exp(-((abs(log(y))^λ - abs(log(x))^λ))^(1 / λ))
+        𝓐𝓐ⁿ = negate
+        Logic(𝓐𝓐ᵗ, 𝓐𝓐ˢ, 𝓐𝓐ⁱ, 𝓐𝓐ⁿ)
     end
 end
 
-function Sugeno_Weber(p)
-    p < -1 && throw("invalid Segeno_Weber parameter")
-    if p == -1 Drastic
-    elseif p == Inf Product
+function Sugeno_Weber(λ)
+    λ < -1 && throw("invalid Segeno_Weber parameter")
+    if λ == -1 Drastic
+    elseif λ == Inf Product
     else
-        Logic(
-            negate,
-            (x, y) -> max(0, (x + y - 1 + p * x * y) / (1 + p)),
-            (x, y) -> min(1, x + y - p * x * y / (1 + p)),
-            (x, y) -> x <= y ? 1 : (1 + (1 + p) * y - x) / (1 + p * x)
-        )
+        𝓢𝓦ᵗ(x, y) = max(0, (x + y - 1 + λ * x * y) / (1 + λ))
+        𝓢𝓦ˢ(x, y) = min(1, x + y - λ * x * y / (1 + λ))
+        𝓢𝓦ⁱ(x, y) = x <= y ? 1 : (1 + (1 + λ) * y - x) / (1 + λ * x)
+        𝓢𝓦ⁿ = negate
+        Logic(𝓢𝓦ᵗ, 𝓢𝓦ˢ, 𝓢𝓦ⁱ, 𝓢𝓦ⁿ)
     end
 end
 
-function Dubois_Prade(p)
-    p < 0 || p > 1 && throw("Invalid Dubois_Prade parameter")
-    if p == 0 Zadeh
-    elseif p == 1 Product
+function Dubois_Prade(λ)
+    λ < 0 || λ > 1 && throw("Invalid Dubois_Prade parameter")
+    if λ == 0 Zadeh
+    elseif λ == 1 Product
     else
-        T(x, y) = x * y / max(x, y, p)
-        Logic(
-            negate,
-            T,
-            (x, y) -> 1 - T(1 - x, 1 - y),
-            (x, y) -> x <= y ? 1 : max(p / x, 1) * y
-        )
+        𝓓𝓟ᵗ(x, y) = x * y / max(x, y, λ)
+        𝓓𝓟ˢ(x, y) = 1 - 𝓓𝓟ᵗ(1 - x, 1 - y)
+        𝓓𝓟ⁱ(x, y) = x <= y ? 1 : max(λ / x, 1) * y
+        𝓓𝓟ⁿ = negate
+        Logic(𝓓𝓟ᵗ, 𝓓𝓟ˢ, 𝓓𝓟ⁱ, 𝓓𝓟ⁿ)
     end
 end
 
-function Yu(p)
-    p < -1 && throw("invalid Yu parameter")
-    if p == -1 Product
-    elseif p == Inf Drastic
+function Yu(λ)
+    λ < -1 && throw("invalid Yu parameter")
+    if λ == -1 Product
+    elseif λ == Inf Drastic
     else
-        Logic(
-            negate,
-            (x, y) -> max(0, (1 + p) * (x + y - 1) - p * x * y),
-            (x, y) -> min(1, x + y + p * x * y),
-            gödel # placeholder to pass test - TODO.
-        )
+        𝓨𝓤ᵗ(x, y) = max(0, (1 + λ) * (x + y - 1) - λ * x * y)
+        𝓨𝓤ˢ(x, y) = min(1, x + y + λ * x * y)
+        𝓨𝓤ⁱ = 𝙕ⁱ # placeholder to pass test - TODO
+        𝓨𝓤ⁿ = negate
+        Logic(𝓨𝓤ᵗ, 𝓨𝓤ˢ, 𝓨𝓤ⁱ, 𝓨𝓤ⁿ)
     end
 end

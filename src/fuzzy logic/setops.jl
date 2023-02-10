@@ -60,7 +60,7 @@ const OP_ALIAS = Dict(
 
 #region Negations: complement of fuzzy set (NOT, !)
 
-negate(x)                   = one(x) - x
+# negate(x)                   = one(x) - x
 #= negate_threshold(x, λ)      = x <= λ ? one(x) : zero(x)
 negate_cosine(x)            = 0.5(1 + cos(x * π))
 negate_sugeno(x, λ)         = λ > -1 ? 1 - x / (1 + λ * x) : nothing
