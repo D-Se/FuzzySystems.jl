@@ -1,21 +1,12 @@
 # membership functions represent a degree of truth.
 abstract type AbstractMember end
+Base.Broadcast.broadcastable(x::AbstractMember) = Ref(x)
 
 macro interface(name, vars...)
     expr = Expr(:block)
     append!(expr.args, map(var -> :($var::Float64), vars))
     quote
-        struct $name <: AbstractMember
-            $expr
-        end
-        # membership functions act as scalars
-        Base.Broadcast.broadcastable(x::$name) = Ref(x)
-        #= methods overwritten - prompts precompilation error
-        Base.iterate(s::$name) = 1
-        function Base.iterate(s::$name, state = 1)
-            state > fieldcount($name) ? nothing : (getfield(s, state), state + 1)
-        end
-        =#
+        struct $name <: AbstractMember; $expr end
     end |> esc
 end
 
