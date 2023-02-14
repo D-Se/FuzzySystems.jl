@@ -4,37 +4,36 @@ import Base: !, &, |, typemin, typemax
 foreach(include, (
     "_utils.jl",
 
-    "setops.jl",
-    "implication.jl",
+    "logic.jl",
     "membership.jl",
     "rule.jl",
     "defuzz.jl",
     "properties.jl",
-    "logic.jl",
-    "ish.jl"
+    "ish.jl",
+
+    "alias.jl"
 ))
 
 export
-    Logic, Ish, setlogic!, |, &, !,
+    Logic, setlogic!, |, &, !,
 
-    # membership structures
-    Gaussian, Bell, Triangular, Trapezoid, Sigmoid,
-    Lins, Linz, Singleton, Pi, Z_shape, S_shape,
+    AbstractIsh, 𝙕ish, 𝘼ish, 𝘿ish, 𝙇ish, 𝙁ish,
+    ish,
 
-    # t-norms
-    ∏_algebraic, bounded_difference, ∏_drastic, ∏_einstein, ∏_hamacher, nilpotent_minimum,
+    # t-norms, s-norms & implications
+    𝙕ᵗ, 𝘼ᵗ, 𝘿ᵗ, 𝙀ᵗ, 𝙃ᵗ, 𝙇ᵗ, 𝙁ᵗ,
+    𝙕ˢ, 𝘼ˢ, 𝘿ˢ, 𝙀ˢ, 𝙃ˢ, 𝙇ˢ, 𝙁ˢ,
+    𝙕ⁱ, 𝘼ⁱ, 𝘿ⁱ,         𝙇ⁱ, 𝙁ⁱ,
 
-    # s-norms
-    ∑_algebraic, ∑_bounded, ∑_drastic, ∑_einstein, ∑_hamacher, ∑_probabilistic, nilpotent_maximum,
+    # incomplete logics
+    KDⁱ, Mⁱ, Rⁱ, DPⁱ, Zⁱ, Zⁱ², Wⁱ, Sⁱ, GRⁱ, Wuⁱ, Yⁱ, largest_R,
 
     # complement
     negate,
 
-    # implication
-    kleene_dienes, mizumoto, gödel, goguen, largest_S, largest_R, zadeh, zadeh_late, weber, gaines_rescher, sharp, fodor, wu, yager, drastic,
-    reichenbach, łukasiewicz, dubois_prade,
-
     # membership
+    Gaussian, Bell, Triangular, Trapezoid, Sigmoid,
+    Lins, Linz, Singleton, Pi, Z_shape, S_shape,
     μ,
 
     # syntax convenience macros

@@ -1,19 +1,17 @@
 # Discovery & vetting tools
 
 # internal constants for property checks - sample size is 499
-(function()
+let
     p = 0.001
     ⬆ = 0+p:p:1-p
     ⬇ = 1-p:-p:0+p
-
     x = Tuple(⬆[⬆ .<= ⬇][2:end])
     y = Tuple(⬆[⬆ .> ⬇])
-    quote
-        const 𝓍 = $x
-        const 𝓎 = $y
-        const 𝓏 = Tuple(μ.(-5+.02:.02:5-.02, Sigmoid(1, 0)))
-    end
-end)() |> eval
+
+    global const 𝓍 = x
+    global const 𝓎 = y
+    global const 𝓏 = Tuple(μ.(-5+.02:.02:5-.02, Sigmoid(1, 0)))
+end
 
 function issnorm(⊥)
     for (x, y, z) in zip(𝓍, 𝓎, 𝓏)
