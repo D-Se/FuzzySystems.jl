@@ -4,7 +4,7 @@ struct Rule
     op::Function
 end
 Rule(in::Tuple{Vararg{Symbol}}, out::Symbol) = Rule(in, out, Base.minimum)
-function Rule(in::Tuple{Vararg{Symbol}}, out::Symbol, op::Union{Symbol, String})
+function Rule(in::Tuple{Vararg{Symbol}}, out::Symbol, op::Symbol)
     Rule(in, out, OP_ALIAS[Symbol(op)])
 end
 
@@ -27,9 +27,6 @@ walk!(list) = ex -> begin
     ex isa Expr && map(walk!(list), @inbounds ex.args[2:end])
     list
 end
-⋆(obj::Expr)                  = obj.args
-⋆(obj::Expr, x::Int64)        = obj.args[x]
-⋆(obj::Expr, x::Tuple{Int64}) = obj.args[x[1]:end]
 
 function _rule(ex::Expr; op = minimum)
     if ex ⋆ 1 isa Expr             # [op] (a | ) b = ...
