@@ -4,70 +4,87 @@ using .FuzzyLogic: sigmoidal, isimplication
     @testset "t-norms" begin
         x, y, z = 0.0, 0.5, 1.0
 
-        @test ∏_algebraic(x, x)         ≡ x
-        @test ∏_algebraic(y, y)         ≡ .25
-        @test ∏_algebraic(z, z)         ≡ z
+        @test 𝙕ᵗ(x, x)         ≡ x
+        @test 𝙕ᵗ(y, y)         ≡ y
+        @test 𝙕ᵗ(z, z)         ≡ z
+        @test 0 == @alloc 𝙕ᵗ(x, x)
 
-        @test bounded_difference(x, x)  ≡ x
-        @test bounded_difference(y, y)  ≡ x
-        @test bounded_difference(z, z)  ≡ z
+        @test 𝘼ᵗ(x, x)         ≡ x
+        @test 𝘼ᵗ(y, y)         ≡ .25
+        @test 𝘼ᵗ(z, z)         ≡ z
+        @test 0 == @alloc 𝘼ᵗ(x, x)
 
-        @test ∏_drastic(x, x)           ≡ x
-        @test ∏_drastic(y, y)           ≡ x
-        @test ∏_drastic(z, z)           ≡ z
+        @test 𝘿ᵗ(x, x)           ≡ x
+        @test 𝘿ᵗ(y, y)           ≡ x
+        @test 𝘿ᵗ(z, z)           ≡ z
+        @test 0 == @alloc 𝘿ᵗ(x, x)
 
-        @test ∏_einstein(x, x)          ≡ x
-        @test ∏_einstein(y, y)          ≡ 0.2
-        @test ∏_einstein(z, z)          ≡ z
+        @test 𝙀ᵗ(x, x)          ≡ x
+        @test 𝙀ᵗ(y, y)          ≡ 0.2
+        @test 𝙀ᵗ(z, z)          ≡ z
+        @test 0 == @alloc 𝙀ᵗ(x, x)
 
-        @test ∏_hamacher(x, x)          ≡ x
-        @test ∏_hamacher(y, y)          ≈ 1//3
-        @test ∏_hamacher(z, z)          ≡ z
+        @test 𝙃ᵗ(x, x)          ≡ x
+        @test 𝙃ᵗ(y, y)          ≈ 1//3
+        @test 𝙃ᵗ(z, z)          ≡ z
+        @test 0 == @alloc 𝙃ᵗ(x, x)
 
-        @test nilpotent_minimum(x, x)   ≡ x
-        @test nilpotent_minimum(y, y)   ≡ x
-        @test nilpotent_minimum(z, z)   ≡ z
+        @test 𝙇ᵗ(x, x)  ≡ x
+        @test 𝙇ᵗ(y, y)  ≡ x
+        @test 𝙇ᵗ(z, z)  ≡ z
+        @test 0 == @alloc 𝙇ᵗ(x, x)
+
+        @test 𝙁ᵗ(x, x)   ≡ x
+        @test 𝙁ᵗ(y, y)   ≡ x
+        @test 𝙁ᵗ(z, z)   ≡ z
+        @test 0 == @alloc 𝙁ᵗ(x, x)
     end
     @testset "s-norms" begin
         x, y, z = 0.0, 0.5, 1.0
-        @test ∑_algebraic(x, x)         ≡ x
-        @test ∑_algebraic(y, y)         ≡ .75
-        @test ∑_algebraic(z, z)         ≡ z
+        @test 𝙕ˢ(x, x)         ≡ x
+        @test 𝙕ˢ(y, y)         ≡ y
+        @test 𝙕ˢ(z, z)         ≡ z
+        @test 0 == @alloc 𝙕ˢ(x, x)
 
-        @test ∑_bounded(x, x)           ≡ x
-        @test ∑_bounded(y, y)           ≡ z
-        @test ∑_bounded(z, z)           ≡ z
+        @test 𝘼ˢ(x, x)         ≡ x
+        @test 𝘼ˢ(y, y)         ≡ .75
+        @test 𝘼ˢ(z, z)         ≡ z
+        @test 0 == @alloc 𝘼ˢ(x, x)
 
-        @test ∑_drastic(x, x)           ≡ x
-        @test ∑_drastic(y, y)           ≡ z
-        @test ∑_drastic(z, z)           ≡ z
+        @test 𝘿ˢ(x, x)           ≡ x
+        @test 𝘿ˢ(y, y)           ≡ z
+        @test 𝘿ˢ(z, z)           ≡ z
+        @test 0 == @alloc 𝘿ˢ(x, x)
 
-        @test ∑_einstein(x, x)          ≡ x
-        @test ∑_einstein(y, y)          ≡ 0.8
-        @test ∑_einstein(z, z)          ≡ z
+        @test 𝙀ˢ(x, x)          ≡ x
+        @test 𝙀ˢ(y, y)          ≡ 0.8
+        @test 𝙀ˢ(z, z)          ≡ z
+        @test 0 == @alloc 𝙀ˢ(x, x)
 
-        @test ∑_hamacher(x, x)          ≡ -x
-        @test ∑_hamacher(y, y)          ≈ 2//3
-        @test isnan(∑_hamacher(z, z))
+        @test 𝙃ˢ(x, x)          ≡ -x
+        @test 𝙃ˢ(y, y)          ≈ 2//3
+        @test isnan(𝙃ˢ(z, z))
+        @test 0 == @alloc 𝙃ˢ(x, x)
 
-        @test nilpotent_maximum(x, x)   ≡ x
-        @test nilpotent_maximum(y, y)   ≡ z
-        @test nilpotent_maximum(z, z)   ≡ z
+        @test 𝙇ˢ(x, x)           ≡ x
+        @test 𝙇ˢ(y, y)           ≡ z
+        @test 𝙇ˢ(z, z)           ≡ z
+        @test 0 == @alloc 𝙇ˢ(x, x)
 
-        @test ∑_probabilistic(x, x)     ≡ x
-        @test ∑_probabilistic(y, y)     ≡ 0.75
-        @test ∑_probabilistic(z, z)     ≡ z
+        @test 𝙁ˢ(x, x)   ≡ x
+        @test 𝙁ˢ(y, y)   ≡ z
+        @test 𝙁ˢ(z, z)   ≡ z
+        @test 0 == @alloc 𝙁ˢ(x, x)
     end
     @testset "implications" begin
-        @test sigmoidal(reichenbach, 0.86, -0.73, 1.0, 0.1) ≈ .1π atol = 0.0001
-        @test sigmoidal(reichenbach, 0, 0, 1, -1.0) ≡ 1.0
-        @test sigmoidal(reichenbach, 1, .5, .5, -.5) ≡ 0.5
-        @test sigmoidal(reichenbach, 1, 1, .5, -.5) ≡ 0.0
+        @test sigmoidal(Rⁱ, 0.86, -0.73, 1.0, 0.1) ≈ .1π atol = 0.0001
+        @test sigmoidal(Rⁱ, 0, 0, 1, -1.0) ≡ 1.0
+        @test sigmoidal(Rⁱ, 1, .5, .5, -.5) ≡ 0.5
+        @test sigmoidal(Rⁱ, 1, 1, .5, -.5) ≡ 0.0
 
         implications = (
-            łukasiewicz, kleene_dienes, mizumoto, largest_S, largest_R,
-            zadeh, weber, zadeh_late, gödel, goguen, gaines_rescher, sharp,
-            fodor, wu, yager, drastic
+            𝙕ⁱ, 𝘼ⁱ, 𝘿ⁱ, 𝙇ⁱ, 𝙁ⁱ,
+            KDⁱ, Mⁱ, DPⁱ, largest_R, Zⁱ, Wⁱ, Zⁱ², GRⁱ, Sⁱ,  Wuⁱ, Yⁱ
         )
         for f in implications
             @test isimplication(f)
@@ -76,7 +93,8 @@ using .FuzzyLogic: sigmoidal, isimplication
         end
     end
 
-#=     @testset "negation" begin
+    #=
+    @testset "negation" begin
         negations = (negate, negate_cosine, negate_intuitionistic)
         for N in negations
             @test isstrongnegation(N)

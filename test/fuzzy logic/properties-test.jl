@@ -3,7 +3,7 @@ istnorm, issnorm, isimplication, isstrongnegation
 
 @testset "setops properties" begin
     @testset "t-norm properties" begin
-        tnorms = (∏_algebraic, bounded_difference, ∏_drastic, ∏_hamacher, nilpotent_minimum)
+        tnorms = (𝙕ᵗ, 𝘼ᵗ, 𝙇ᵗ, 𝘿ᵗ, 𝙃ᵗ, 𝙁ᵗ)
         for tnorm in tnorms
             @test istnorm(tnorm)
             @test !issnorm(tnorm)
@@ -13,8 +13,7 @@ istnorm, issnorm, isimplication, isstrongnegation
     end
 
     @testset "s-norm properties" begin
-        snorms = (∑_algebraic, ∑_bounded, ∑_drastic, ∑_einstein, ∑_hamacher,
-        nilpotent_maximum, ∑_probabilistic)
+        snorms = (𝙕ˢ, 𝘼ˢ, 𝘿ˢ, 𝙀ˢ, 𝙃ˢ, 𝙁ˢ)
         for snorm in snorms
             @test issnorm(snorm)
             @test !istnorm(snorm)
@@ -25,27 +24,26 @@ istnorm, issnorm, isimplication, isstrongnegation
 
     @testset "DeMorgan triples" begin
         @test isdemorgantriplet(min, max, negate)
-        @test isdemorgantriplet(∏_algebraic, ∑_probabilistic, negate)
-        @test isdemorgantriplet(bounded_difference, ∑_bounded, negate)
-        @test isdemorgantriplet(nilpotent_minimum, nilpotent_maximum, negate)
-        @test isdemorgantriplet(∏_algebraic, ∑_probabilistic, negate)
-        @test isdemorgantriplet(∏_drastic, ∑_drastic, negate)
+        @test isdemorgantriplet(𝘼ᵗ, 𝘼ˢ, negate)
+        @test isdemorgantriplet(𝙇ᵗ, 𝙇ˢ, negate)
+        @test isdemorgantriplet(𝙁ᵗ, 𝙁ˢ, negate)
+        @test isdemorgantriplet(𝘿ᵗ, 𝘿ˢ, negate)
     end
 
     @testset "implication properties" begin
         @test !isimplication(min)
 
-        @test all(implicationproperties(gaines_rescher)) broken = true # ??
+        @test all(implicationproperties(GRⁱ)) broken = true # ??
         (true, true, true, true, false, true, false, true)
-        @test implicationproperties(gödel) ==
+        @test implicationproperties(𝙕ⁱ) ==
         (true, true, true, true, true, true, true, false) broken = true
-        @test implicationproperties(goguen) ==
+        @test implicationproperties(𝘼ⁱ) ==
         (true, true, true, true, true, true, true, false) broken = true
-        @test implicationproperties(kleene_dienes) ==
+        @test implicationproperties(KDⁱ) ==
         (true, true, true, true, false, true, false, true)
-        @test implicationproperties(zadeh) ==
+        @test implicationproperties(Zⁱ) ==
         (true, true, true, true, false, false, false, false)
-        @test implicationproperties(wu) ==
+        @test implicationproperties(Wⁱ) ==
         (true, true, true, false, true, false, true, true) broken = true
     end
 end

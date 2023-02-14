@@ -1,6 +1,6 @@
 # Fuzzy system
 
-Fuzzy systems approximate imprecise reasoning in practical identification, regression and classification tasks. Each system consists of [Fuzzification](@ref), a [Knowledge base](@ref), an [Inference engine](@ref) and [Defuzzification](@ref).
+Fuzzy systems approximate imprecise human reasoning in practical identification, regression and classification tasks using linguistic variables and many-valued logic. Each system consists of [Fuzzification](@ref), a [Knowledge base](@ref), an [Inference engine](@ref) and [Defuzzification](@ref).
 
 !!! note "Ex: Julia as primary language - Mamdani"
     $$Would\ you\ recommend\ Julia?$$

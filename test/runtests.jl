@@ -18,7 +18,7 @@ end
         include("fuzzy logic/defuzz-test.jl")
         include("fuzzy logic/rule-test.jl")
         include("fuzzy logic/setops-test.jl")
-        include("fuzzy logic/logic-test.jl")
+        include("fuzzy logic/parametric-logic-test.jl")
     end
     include("system-test.jl")
 end

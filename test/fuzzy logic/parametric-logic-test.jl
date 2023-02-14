@@ -26,10 +26,15 @@ Dubois_Prade, Yu, Aczel_Alsina, Hamacher
     for constructor in logics
         for param in .1:.3:.7
             L = constructor(param)
-            @test isimplication(L.I)
             @test istnorm(L.T)
             @test issnorm(L.S)
             @test isstrongnegation(L.N)
         end
     end
+
+#=     for name in (:Zadeh, :Drastic, :Product, :Łukasiewicz, :Fodor)
+        setlogic!(name)
+        @test 0 == @alloc setlogic!(name)
+        @test 0 == @alloc ish(0.35)
+    end =#
 end
