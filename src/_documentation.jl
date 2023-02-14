@@ -1,34 +1,34 @@
-"""
-Fuzzy systems approximate human reasoning using linguistic variables and many-valued logic.
-
-These can be used for regression and classification problems.
-Generate a set of [`rules`](@ref FuzzySystems.FuzzyLogic.Rule).
-
-* Automatic rule generation
-  - Gradient descent
-  - Neural networks
-  - Genetic algorithm
-  - Cluster
+#region Types
 
 """
-FuzzySystems
+    AbstractFuzzySystem
+
+An abstract type for which concrete types expose an interface for working with fuzzy systems.
+
+FuzzySystems.jl defines two subtypes of `AbstractFuzzySystem`:
+Mamdani and Sugeno.
+"""
+AbstractFuzzySystem
+
+"""
+# Keyword arguments
+- `logic`
+- `rulebase`
+- `engine`
+- `universe`
+"""
+FuzzySystem
 
 """
     Logic(T::Function, S::Function, I::Function, N::Function)
 
-Definition of fuzzy set operations.
-- T-norm (intersection, |)
-- S-norm (union, &)
-- Negation (complement)
+Form logics with many-valued truth semantics. Each logic consists of a t-norm `|`, s-norm `&`, implication `⟹` and negation `!` function.
 
-Infinite combinations of ⟨ N, T, S ⟩ exist, all violating some properties of
-classical set theory.
+
+These non-classical logics violate some properties of classical set theory
 
 It is often desirable to work with ⟨ N, T, S ⟩ that preserve the duality, see
 [`isdemorgantriplet`](@ref) between intersections and unions in classical set theory.
-
-Averaging
-Modifying
 """
 Logic
 
@@ -75,11 +75,26 @@ See also [`@rule`](@ref), [`@rules`](@ref) and [`μ`](@ref)
 Rule
 
 """
+    AbstractIsh <: AbstractFloat
+Abstract supertype for fuzzy values.
+"""
+AbstractIsh
+
+"""
+    *ish(x) <: AbstractIsh
+Fuzzy value type for fuzzy logics, where * is an identifier.
+"""
+𝙕ish, 𝘼ish, 𝘿ish, 𝙇ish, 𝙁ish
+
+#endregion
+
+#region Macros
+"""
     @rule(expr...)
 Create a fuzzy [`Rule`](@ref).
 
 # Examples
-```jldoctest
+```julia
 julia> @rule cheap tip = poor service & bad food
 Rule((:poor, :bad), :cheap, "MAX")
 
@@ -99,11 +114,13 @@ average = good
 Syntax shortcut for making membership dictionaries.
 
 # Examples
-```jldoctest
-julia> @var {
+```julia
+@var {
     poor     : Q 0 0 2 4
     good     : T 3 5 7
 }
+# output
+
 Dict{Symbol, AbstractMember} with 2 entries:
     :excellent => Q|₆₌⁸⁼¹⁼₁₌|
     :good => T|₃₌⁵⁼₇₌|
@@ -111,6 +128,55 @@ Dict{Symbol, AbstractMember} with 2 entries:
 """
 :(@var)
 
+#endregion
+
+#region Logic methods
+"""
+    ish(x <: Real)
+
+Convert a number to the fuzzy type of the active logic.
+
+See also [`setlogic!`](@ref).
+# Examples
+```julia
+x = ish(3)
+typeof(x)
+
+setlogic!(:Drastic)
+x = ish(3)
+typeof(x)
+
+# output
+≈1.0
+𝙕ish
+
+≈1.0
+𝘿ish
+```
+"""
+ish
+
+
+"""
+    setlogic(x::Symbol)
+
+Change the logic used for fuzzy operations.
+
+!!! warning
+    Using definitions made prior to swapping logic may result in undefined behavior or
+    logical fallacies.
+
+Valid values are
+* Constant: `:Zadeh`, `:Algebraic`, `:Drastic`, `:Łukasiewicz`, `:Fodor`
+* Parametric: `:Frank`, `:Hamacher`, `:Schweizer_Sklar`, `:Yager`, `:Dombi`, `:Aczel_Alsina`, `Sugeno_Weber`, `Dubois_Prade`, `Yu`
+
+See also [`ish`](@ref), [`Logic`](@ref).
+"""
+setlogic!
+
+#endregion
+
+#region Logic queries
 """
     defuzz(firing_strength, fis, method)
 Obtain a crisp value from degrees of memberships of ``x``.
@@ -127,7 +193,7 @@ method one of
 
 See also [`μ`](@ref).
 """
-function defuzz end
+defuzz
 
 """
     μ(x, mf::membership_function)
@@ -150,9 +216,7 @@ See also [`AbstractMember`](@ref), [`defuzz`](@ref).
 Test the axiom adherence of an implication function.
 
 `N` is a strong negation function, i.e. a fuzzy complement `~~x == x`.
-`T` is a left-continuous t-norm, defaults to nilpotent minimum
-
-Mas et al. (2007). A survey on fuzzy implication functions. IEEE Transactions on fuzzy systems, 15(6), 1107-1121.
+`T` is a left-continuous t-norm, defaults to the nilpotent minimum.
 """
 implicationproperties
 
@@ -165,6 +229,8 @@ istnorm, issnorm
 """
     isdemorgantriplet(⊤::Function, ⊥::Function, ~::Function)
 
-Check if duality between t-norm, s-norm and a complement is preserved.
+Is duality between t-norm `⊤` (|), s-norm `⊥` (&) and a complement (~) is preserved?
 """
 isdemorgantriplet
+
+#endregion

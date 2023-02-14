@@ -1,20 +1,5 @@
-"""
-    AbstractFuzzySystem
-
-An abstract type for which concrete types expose an interface for working with fuzzy systems.
-
-FuzzySystems.jl defines two subtypes of `AbstractFuzzySystem`:
-Mamdani and Sugeno.
-"""
 abstract type AbstractFuzzySystem end
 
-"""
-# Keyword arguments
-- `logic`
-- `rulebase`
-- `engine`
-- `universe`
-"""
 mutable struct FuzzySystem <: AbstractFuzzySystem
     logic
     rulebase

@@ -26,17 +26,6 @@ function ¦(x, case)
     case == 1 ? sup(x) : case == 2 ? sub(x) : x
 end
 
-macro switch(ex)
-    args = ex.args
-    e = Expr(:if, Expr(:call, :(==), :op, 1), Expr(:block, args[1]))
-    popfirst!(args)
-    n = 2
-    tgt = e.args
-    for op in args
-        temp = Expr(:elseif, Expr(:call, :(==), :op, n), Expr(:block, op))
-        push!(tgt, temp)
-        n += 1
-        tgt = tgt[3].args
-    end
-    quote $e end |> esc
-end
+⋆(obj::Expr)                  = obj.args
+⋆(obj::Expr, x::Int64)        = obj.args[x]
+⋆(obj::Expr, x::Tuple{Int64}) = obj.args[x[1]:end]
