@@ -1,4 +1,4 @@
-using .FuzzyLogic: ⊕, mf
+using .FuzzyLogic: ⊕
 
 @testset "membership" begin
     @testset "membership interfaces" begin
@@ -12,7 +12,6 @@ using .FuzzyLogic: ⊕, mf
         @test μ(Inf, m)         == 0.0
         @test repr(m)           == "G|⁰⁼⁄₁₌|"
         @test 0 == @alloc μ(0.3, m)
-        @test mf(:G, 0, 1) == m
 
         m = Bell(2, 6, 4)
         @test m == Bell(2.0, 6, 4)

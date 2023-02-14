@@ -2,26 +2,24 @@
 abstract type AbstractMember end
 Base.Broadcast.broadcastable(x::AbstractMember) = Ref(x)
 
-macro interface(name, vars...)
+for type in ⋆:({
+    Gaussian     t σ
+    Bell         l t r
+    Triangular   l t r
+    Trapezoid    lb lt rt rb
+    Sigmoid      a c #limit
+    Lins         a b
+    Linz         a b
+    Singleton    h
+    Pi           a b c d
+    S_shape      a b
+    Z_shape      a b
+})
+    name, vars... = ⋆type
     expr = Expr(:block)
     append!(expr.args, map(var -> :($var::Float64), vars))
-    quote
-        struct $name <: AbstractMember; $expr end
-    end |> esc
+    @eval struct $name <: AbstractMember; $expr end
 end
-
-@interface Gaussian     t σ
-@interface Bell         l t r
-@interface Triangular   l t r
-@interface Trapezoid    lb lt rt rb
-@interface Sigmoid      a c #limit
-@interface Lins         a b
-@interface Linz         a b
-@interface Singleton    h
-@interface Pi           a b c d
-@interface S_shape      a b
-@interface Z_shape      a b
-# @interface Piece        a b c
 
 μ(x, mf::Gaussian)   = @fastmath exp(-(x - mf.t)^2 / 2mf.σ^2)
 μ(x, mf::Bell)       = 1 / (1 + abs((x - mf.t) / mf.l)^2mf.r)
@@ -87,23 +85,6 @@ function μ(x, mf::Z_shape)
         one(x)
     end
 end
-
-# (unexported) supported synonyms.
-const MF_ALIAS = Dict(
-    :G => Gaussian, :g => Gaussian, :gauss => Gaussian, :gaussmf => Gaussian,
-    :B => Bell, :b => Bell, :bell => Bell, :gbell => Bell, :gbellmf => Bell,
-    :T => Triangular, :triangle => Triangular, :trimf => Triangular,
-    :Q => Trapezoid, :trap => Trapezoid, :trapmf => Trapezoid,
-    :S => Sigmoid, :s => Sigmoid, :sig => Sigmoid, :sigmf => Sigmoid,
-    :LS => Lins, :ls => Lins,
-    :LZ => Linz, :lz => Linz,
-    :single => Singleton,
-    :π => Pi,
-    :SS => S_shape, :ss => S_shape, :smf => S_shape,
-    :ZS => Z_shape, :zs => Z_shape, :zmf => Z_shape
-)
-
-mf(s::Symbol, args...) = MF_ALIAS[s](args...)
 
 # Custom print methods
 Base.show(io::IO, mf::Triangular) = print(io, "T|$(¦(mf.l, 2))$(¦(mf.t, 1))$(¦(mf.r, 2))|")
