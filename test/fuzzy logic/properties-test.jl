@@ -3,7 +3,7 @@ istnorm, issnorm, isimplication, isstrongnegation
 
 @testset "setops properties" begin
     @testset "t-norm properties" begin
-        tnorms = (𝙕ᵗ, 𝘼ᵗ, 𝙇ᵗ, 𝘿ᵗ, 𝙃ᵗ, 𝙁ᵗ)
+        tnorms = (𝙂ᵗ, 𝘼ᵗ, 𝙇ᵗ, 𝘿ᵗ, 𝙃ᵗ, 𝙁ᵗ)
         for tnorm in tnorms
             @test istnorm(tnorm)
             @test !issnorm(tnorm)
@@ -13,7 +13,7 @@ istnorm, issnorm, isimplication, isstrongnegation
     end
 
     @testset "s-norm properties" begin
-        snorms = (𝙕ˢ, 𝘼ˢ, 𝘿ˢ, 𝙀ˢ, 𝙃ˢ, 𝙁ˢ)
+        snorms = (𝙂ˢ, 𝘼ˢ, 𝘿ˢ, 𝙀ˢ, 𝙃ˢ, 𝙁ˢ)
         for snorm in snorms
             @test issnorm(snorm)
             @test !istnorm(snorm)

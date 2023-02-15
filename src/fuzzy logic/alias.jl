@@ -1,14 +1,6 @@
 # Unexported yet supported synonyms to facilitate interoperability.
 # Legacy and popular software
 
-macro alias(ex)
-    aliases = [x.args[2:end] for x in ex.args]
-    funs = [x.args[1] for x in ex.args]
-    values = eval.(reduce(vcat, fill.(funs, length.(aliases))))
-    keys = reduce(vcat, aliases)
-    Dict(keys .=> values)
-end
-
 const MF_ALIAS = @alias {
     Gaussian      G     g   gauss           gaussmf
     Bell          B     b   bell      gbell gbellmf
@@ -24,9 +16,9 @@ const MF_ALIAS = @alias {
 }
 
 const OP_ALIAS = @alias {
-    𝙕ᵗ minimum min MIN zadeh_t
-    𝙕ˢ maximum max MAX zadeh_s
-    𝙕ⁱ gödel
+    𝙂ᵗ minimum min MIN zadeh_t
+    𝙂ˢ maximum max MAX zadeh_s
+    𝙂ⁱ gödel
 
     𝘼ᵗ algebraic_product    ∏_algebraic         algprod   algor
     # probor is a MATLAB misnomer

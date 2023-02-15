@@ -4,10 +4,10 @@ using .FuzzyLogic: sigmoidal, isimplication
     @testset "t-norms" begin
         x, y, z = 0.0, 0.5, 1.0
 
-        @test 𝙕ᵗ(x, x)         ≡ x
-        @test 𝙕ᵗ(y, y)         ≡ y
-        @test 𝙕ᵗ(z, z)         ≡ z
-        @test 0 == @alloc 𝙕ᵗ(x, x)
+        @test 𝙂ᵗ(x, x)         ≡ x
+        @test 𝙂ᵗ(y, y)         ≡ y
+        @test 𝙂ᵗ(z, z)         ≡ z
+        @test 0 == @alloc 𝙂ᵗ(x, x)
 
         @test 𝘼ᵗ(x, x)         ≡ x
         @test 𝘼ᵗ(y, y)         ≡ .25
@@ -41,10 +41,10 @@ using .FuzzyLogic: sigmoidal, isimplication
     end
     @testset "s-norms" begin
         x, y, z = 0.0, 0.5, 1.0
-        @test 𝙕ˢ(x, x)         ≡ x
-        @test 𝙕ˢ(y, y)         ≡ y
-        @test 𝙕ˢ(z, z)         ≡ z
-        @test 0 == @alloc 𝙕ˢ(x, x)
+        @test 𝙂ˢ(x, x)         ≡ x
+        @test 𝙂ˢ(y, y)         ≡ y
+        @test 𝙂ˢ(z, z)         ≡ z
+        @test 0 == @alloc 𝙂ˢ(x, x)
 
         @test 𝘼ˢ(x, x)         ≡ x
         @test 𝘼ˢ(y, y)         ≡ .75
@@ -83,7 +83,7 @@ using .FuzzyLogic: sigmoidal, isimplication
         @test sigmoidal(Rⁱ, 1, 1, .5, -.5) ≡ 0.0
 
         implications = (
-            𝙕ⁱ, 𝘼ⁱ, 𝘿ⁱ, 𝙇ⁱ, 𝙁ⁱ,
+            𝙂ⁱ, 𝘼ⁱ, 𝘿ⁱ, 𝙇ⁱ, 𝙁ⁱ,
             KDⁱ, Mⁱ, DPⁱ, largest_R, Zⁱ, Wⁱ, Zⁱ², GRⁱ, Sⁱ,  Wuⁱ, Yⁱ
         )
         for f in implications

@@ -9,11 +9,11 @@ negate(x) = 1 - x
 
 #region complete logics
 # Style: \bisansX
-𝙕ᵗ          = Base.min
-𝙕ˢ          = Base.max
-𝙕ⁱ(x, y)    = x <= y ? one(x) : y # gödel
-𝙕ⁿ          = negate
-Zadeh = Logic(𝙕ᵗ, 𝙕ˢ, 𝙕ⁱ, 𝙕ⁿ)
+𝙂ᵗ          = Base.min
+𝙂ˢ          = Base.max
+𝙂ⁱ(x, y)    = x <= y ? one(x) : y # gödel
+𝙂ⁿ          = negate
+Gödel = Logic(𝙂ᵗ, 𝙂ˢ, 𝙂ⁱ, 𝙂ⁿ)
 
 𝘼ᵗ(x, y)    = x * y
 𝘼ˢ(x, y)    = 1 - (1 - x) * (1 - y)
@@ -51,14 +51,14 @@ Fodor = Logic(𝙁ᵗ, 𝙁ˢ, 𝙁ⁱ, 𝙁ⁿ)
 
 # Implication functions
 KDⁱ(x, y) = max(1 - x, y)
-Rⁱ = Mⁱ(x, y) = 1 - x + x * y
+Rⁱ        = Mⁱ(x, y) = 1 - x + x * y
 DPⁱ(x, y) = y == zero(x) ? 1 - x : x == 1 ? y : one(x)
-Zⁱ(x, y) = max(1 - x, min(x, y))
+Zⁱ(x, y)  = max(1 - x, min(x, y))
 Zⁱ²(x, y) = x < 0.5 || 1 - x > y ? 1 - x : x < y ? x : y
-Wⁱ(x, y) = x < 1 ? one(x) : x == 1 ? y : zero(x)
+Wⁱ(x, y)  = x < 1 ? one(x) : x == 1 ? y : zero(x)
 Sⁱ = GRⁱ(x, y) = x <= y ? one(x) : zero(x)
 Wuⁱ(x, y) = x <= y ? one(x) : min(1 - x, y)
-Yⁱ(x, y) = x == y == 0 ? one(x) : y^x
+Yⁱ(x, y)  = x == y == 0 ? one(x) : y^x
 largest_R(x, y) = x == 1 ? y : one(x)
 
 # https://arxiv.org/pdf/2002.06100.pdf
@@ -83,7 +83,7 @@ end
 
 function Frank(λ)
     0 < λ < Inf || throw("improper Frank domain")
-    if λ == 0 Zadeh
+    if λ == 0 Gödel
     elseif λ == 1 Product
     elseif isinf(λ) Łukasiewicz
     else
@@ -106,7 +106,7 @@ function Hamacher(;α = nothing, β = 0, γ = 0)
 end
 
 function Schweizer_Sklar(λ)
-    if λ == -Inf Zadeh
+    if λ == -Inf Gödel
     elseif λ == 0 Product
     elseif isinf(λ) Drastic
     else
@@ -127,7 +127,7 @@ end
 function Yager(λ)
     λ < 0 && throw("invalid Yager lambda")
     if λ == 0 Drastic
-    elseif λ == Inf Zadeh
+    elseif λ == Inf Gödel
     else
         𝓨ᵗ(x, y) = max(0, 1 - ((1 - x)^λ + (1 - y)^λ)^(1/λ))
         𝓨ˢ(x, y) = λ == 1 ? 𝙇ˢ(x, y) : min(1, (x^λ + y^λ) ^ (1 / λ))
@@ -140,7 +140,7 @@ end
 function Dombi(λ)
     λ < 0 && throw("invalid Dombi parameter")
     if λ == 0 Drastic
-    elseif λ == Inf Zadeh
+    elseif λ == Inf Gödel
     else
         𝓓ᵗ(x, y) = x*y == 0 ? 0 : 1 / (1 + ((1 / x - 1)^λ + (1 / y - 1)^λ)^(1 / λ))
         𝓓ˢ(x, y) = 1 - 𝓓ᵗ(1 - x, 1 - y)
@@ -153,7 +153,7 @@ end
 function Aczel_Alsina(λ)
     λ < 0 && throw("Invalid Aczel_Alsina parameters")
     if λ == 0 Drastic
-    elseif λ == Inf Zadeh
+    elseif λ == Inf Gödel
     else
         𝓐𝓐ᵗ(x, y) = exp(- (abs(log(x))^λ + abs(log(y))^λ))
         𝓐𝓐ˢ(x, y) = 1 - 𝓐𝓐ᵗ(1 - x, 1 - y)
@@ -196,7 +196,7 @@ function Yu(λ)
     else
         𝓨𝓤ᵗ(x, y) = max(0, (1 + λ) * (x + y - 1) - λ * x * y)
         𝓨𝓤ˢ(x, y) = min(1, x + y + λ * x * y)
-        𝓨𝓤ⁱ       = 𝙕ⁱ # placeholder to pass test - TODO
+        𝓨𝓤ⁱ       = 𝙂ⁱ # placeholder to pass test - TODO
         𝓨𝓤ⁿ       = negate
         Logic(𝓨𝓤ᵗ, 𝓨𝓤ˢ, 𝓨𝓤ⁱ, 𝓨𝓤ⁿ)
     end
