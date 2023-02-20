@@ -1,7 +1,7 @@
 # Unexported yet supported synonyms to facilitate interoperability.
 # Legacy and popular software
 
-const MF_ALIAS = @alias {
+const MF_ALIAS = @aliasdict {
     Gaussian      G     g   gauss           gaussmf
     Bell          B     b   bell      gbell gbellmf
     Triangular    T     t   triangle        trimf
@@ -15,33 +15,33 @@ const MF_ALIAS = @alias {
     Pi            π
 }
 
-const OP_ALIAS = @alias {
-    𝙂ᵗ minimum min MIN zadeh_t
-    𝙂ˢ maximum max MAX zadeh_s
-    𝙂ⁱ gödel
+const OP_ALIAS = @aliasdict {
+    Gödel_Dumett.T minimum min MIN zadeh_t
+    Gödel_Dumett.S maximum max MAX zadeh_s
+    Gödel_Dumett.I gödel
 
-    𝘼ᵗ algebraic_product    ∏_algebraic         algprod   algor
+    Algebraic.T algebraic_product    ∏_algebraic         algprod   algor
     # probor is a MATLAB misnomer
-    𝘼ˢ algebraic_sum        ∑_algebraic         algsum    algand probor
-    𝘼ⁱ goguen
+    Algebraic.S algebraic_sum        ∑_algebraic         algsum    algand probor
+    Algebraic.I goguen
 
-    𝘿ᵗ drastic_product      ∏_drastic           drasprod  drasor
-    𝘿ˢ drastic_sum          ∑_drastic           drassum   drasand
-    𝘿ⁱ drastic
+    Drastic.T drastic_product      ∏_drastic           drasprod  drasor
+    Drastic.S drastic_sum          ∑_drastic           drassum   drasand
+    Drastic.I drastic
 
-    𝙀ᵗ einstein_product    ∑_einstein           einprod   einor
-    𝙀ˢ einstein_sum        ∑_einstein           einsum    einand
+    Einstein.T einstein_product    ∑_einstein           einprod   einor
+    Einstein.S einstein_sum        ∑_einstein           einsum    einand
 
-    𝙃ᵗ hamacher_product    ∏_hamacher           hamprod   hamor
-    𝙃ˢ hamacher_sum        ∑_hamacher           hamsum    hamand
+    Hamacher.T hamacher_product    ∏_hamacher           hamprod   hamor
+    Hamacher.S hamacher_sum        ∑_hamacher           hamsum    hamand
 
-    𝙇ᵗ bold_intersection    bounded_difference            boundor
-    𝙇ˢ bounded_sum          ∑_bounded           boundsum  boundand
-    𝙇ⁱ łukasiewicz
+    Łukasiewicz.T bold_intersection    bounded_difference            boundor
+    Łukasiewicz.S bounded_sum          ∑_bounded           boundsum  boundand
+    Łukasiewicz.I łukasiewicz
 
-    𝙁ᵗ nilpotent_minimum                        nilmin    nilor
-    𝙁ˢ nilpotent_maximum                        nilmax    niland
-    𝙁ⁱ fodor
+    Fodor.T nilpotent_minimum                        nilmin    nilor
+    Fodor.S nilpotent_maximum                        nilmax    niland
+    Fodor.I fodor
 
     maximum                    max MAX
     minimum                    min MIN
@@ -58,7 +58,7 @@ const OP_ALIAS = @alias {
     Wuⁱ wu
     Yⁱ yager
 }
-
+#=
 function op(name, x, y)
     name == :bounded_sum ? 𝙇ˢ(x, y)::Float64 :
     name == :einstein_sum ? 𝙀ˢ(x, y)::Float64 :
@@ -66,3 +66,4 @@ function op(name, x, y)
     name == :drastic_sum ? 𝘿ˢ(x, y)::Float64 :
     throw("invalid function alias")
 end
+ =#

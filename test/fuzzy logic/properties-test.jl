@@ -3,7 +3,10 @@ istnorm, issnorm, isimplication, isstrongnegation
 
 @testset "setops properties" begin
     @testset "t-norm properties" begin
-        tnorms = (𝙂ᵗ, 𝘼ᵗ, 𝙇ᵗ, 𝘿ᵗ, 𝙃ᵗ, 𝙁ᵗ)
+        tnorms = (
+            Gödel_Dumett.T, Algebraic.T, Łukasiewicz.T,
+            Drastic.T, Hamacher.T, Fodor.T, Einstein.T
+        )
         for tnorm in tnorms
             @test istnorm(tnorm)
             @test !issnorm(tnorm)
@@ -13,7 +16,10 @@ istnorm, issnorm, isimplication, isstrongnegation
     end
 
     @testset "s-norm properties" begin
-        snorms = (𝙂ˢ, 𝘼ˢ, 𝘿ˢ, 𝙀ˢ, 𝙃ˢ, 𝙁ˢ)
+        snorms = (
+            Gödel_Dumett.S, Algebraic.S, Łukasiewicz.S,
+            Drastic.S, Hamacher.S, Fodor.S, Einstein.S
+        )
         for snorm in snorms
             @test issnorm(snorm)
             @test !istnorm(snorm)
@@ -24,10 +30,10 @@ istnorm, issnorm, isimplication, isstrongnegation
 
     @testset "DeMorgan triples" begin
         @test isdemorgantriplet(min, max, negate)
-        @test isdemorgantriplet(𝘼ᵗ, 𝘼ˢ, negate)
-        @test isdemorgantriplet(𝙇ᵗ, 𝙇ˢ, negate)
-        @test isdemorgantriplet(𝙁ᵗ, 𝙁ˢ, negate)
-        @test isdemorgantriplet(𝘿ᵗ, 𝘿ˢ, negate)
+        @test isdemorgantriplet(Algebraic.T, Algebraic.S, negate)
+        @test isdemorgantriplet(Łukasiewicz.T, Łukasiewicz.S, negate)
+        @test isdemorgantriplet(Fodor.T, Fodor.S, negate)
+        @test isdemorgantriplet(Drastic.T, Drastic.S, negate)
     end
 
     @testset "implication properties" begin

@@ -30,7 +30,7 @@ end
 ⋆(obj::Expr, x::Int64)        = obj.args[x]
 ⋆(obj::Expr, x::Tuple{Int64}) = obj.args[x[1]:end]
 
-macro alias(ex)
+macro aliasdict(ex)
     aliases = [x.args[2:end] for x in ⋆ex]
     funs = [x ⋆ 1 for x in ⋆ex]
     values = eval.(reduce(vcat, fill.(funs, length.(aliases))))

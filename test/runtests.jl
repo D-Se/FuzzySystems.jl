@@ -13,6 +13,7 @@ end
 
 @testset "FuzzySystems" begin
     @testset "FuzzyLogic" begin
+        include("fuzzy logic/ish-test.jl")
         include("fuzzy logic/membership-test.jl")
         include("fuzzy logic/properties-test.jl")
         include("fuzzy logic/defuzz-test.jl")

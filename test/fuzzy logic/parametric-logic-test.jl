@@ -1,11 +1,10 @@
 using .FuzzyLogic: Logic, Frank, Schweizer_Sklar, Yager, Sugeno_Weber, Dombi,
-Dubois_Prade, Yu, Aczel_Alsina, Hamacher
+Dubois_Prade, Yu, Aczel_Alsina, Hamacher2
 
 @testset "Logics" begin
-    logics = (
-        Frank, Schweizer_Sklar, Yager, Dombi, Sugeno_Weber, Yu
-    )
-    L = Hamacher(;α = .5, β = 0, γ = 1)
+    logics = (Frank, Schweizer_Sklar, Yager, Dombi, Sugeno_Weber, Yu)
+
+    L = Hamacher2(;α = .5, β = 0, γ = 1)
     @test isimplication(L.I)
     @test istnorm(L.T)
     @test issnorm(L.S)
@@ -31,10 +30,4 @@ Dubois_Prade, Yu, Aczel_Alsina, Hamacher
             @test isstrongnegation(L.N)
         end
     end
-
-#=     for name in (:Zadeh, :Drastic, :Product, :Łukasiewicz, :Fodor)
-        setlogic!(name)
-        @test 0 == @alloc setlogic!(name)
-        @test 0 == @alloc ish(0.35)
-    end =#
 end

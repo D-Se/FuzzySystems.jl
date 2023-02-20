@@ -15,6 +15,7 @@ end
 
 function issnorm(⊥)
     for (x, y, z) in zip(𝓍, 𝓎, 𝓏)
+        #x, y, z = ish(x), ish(y), ish(z)
         ⊥(x, 0) ≈ x &&                     # identity
         ⊥(x, y) ≈ ⊥(y, x) && #&&              # communicativity
         ⊥(x, ⊥(y, z)) ≈ ⊥(⊥(x, y), z) && # associativity
@@ -26,6 +27,7 @@ end
 
 function istnorm(⊤)
     for (x, y, z) in zip(𝓍, 𝓎, 𝓏)
+        #x, y, z = ish(x), ish(y), ish(z)
         ⊤(x, 1) ≈ x   &&                  # identity
         ⊤(x, y) ≈ ⊤(y, x) &&              # communicativity
         ⊤(x, ⊤(y, z)) ≈ ⊤(⊤(x, y), z) &&  # associativity
