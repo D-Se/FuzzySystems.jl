@@ -6,15 +6,15 @@
 # ----
 
 
-function WM(data, label; membership = gaussian, tnorm = algebraic_product, implication = I_Zadeh, range = nothing) 
+#= function WM(data, label; membership = gaussian, tnorm = algebraic_product, implication = I_Zadeh, range = nothing)
     # 1. Divide input and output spaces
-    
+
     # 2. Generate fuzzy rules
 
     # 3. Product aggregation of rules
-    
+
     # 4. Delete redundant rules
-end
+end =#
 # ----
 # CHI: Rule-based classification
 # classification
