@@ -101,29 +101,31 @@ function LOM(𝒰, mf)
 end
 
 function WTAV(firing_strength, fis)
-    mean_vec = Float64[]
-    for i in eachindex(fis.rules)
-        push!(mean_vec, mean_at(fis.output_dict[fis.rules[i].out], firing_strength[i]))
+    res = Float64(0)
+    s = sum(firing_strength)
+    s == 0 && return res
+    for i in eachindex(firing_strength)
+        m = mean_at(fis.output_dict[fis.rules[i].out], firing_strength[i])::Float64
+        m *= firing_strength[i]
+        res += m
     end
-    sumfire = sum(firing_strength)
-    if sumfire != 0
-        (mean_vec' * firing_strength) / sumfire
-    else
-        mean_vec
-    end
+    res / s
 end
 
 function mean_at(mf::Triangular, firing_strength)
     isone(firing_strength) && return mf.t
-    p1 = (mf.t - mf.l) * firing_strength + mf.l
-    p2 = (mf.t - mf.r) * firing_strength + mf.r
-    (p1 + p2) / 2
+    #p1 = (mf.t - mf.l) * firing_strength + mf.l
+    #p2 = (mf.t - mf.r) * firing_strength + mf.r
+    #(p1 + p2) / 2
+    0.5 * (2*mf.t*firing_strength - mf.l*firing_strength + mf.l - mf.r*firing_strength + mf.r)
 end
 
 function mean_at(mf::Trapezoid, firing_strength)
-    p1 = (mf.lt - mf.lb) * firing_strength + mf.lb
+    #= p1 = (mf.lt - mf.lb) * firing_strength + mf.lb
     p2 = (mf.rt - mf.rb) * firing_strength + mf.rb
-    (p1 + p2) / 2
+    (p1 + p2) / 2  =#
+
+    0.5 * (mf.lt*firing_strength - mf.lb*firing_strength + mf.lb + mf.rt*firing_strength - mf.rb*firing_strength + mf.rb)
 end
 
 mean_at(mf::Gaussian, firing_strength) = mf.t
