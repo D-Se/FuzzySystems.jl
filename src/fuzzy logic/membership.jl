@@ -21,14 +21,16 @@ for type in ⋆:({
     @eval struct $name <: AbstractMember; $expr end
 end
 
-μ(x, mf::Gaussian)   = @fastmath exp(-(x - mf.t)^2 / 2mf.σ^2)
+@fastmath begin
+μ(x, mf::Gaussian)   = exp(-(x - mf.t)^2 / 2mf.σ^2)
 μ(x, mf::Bell)       = 1 / (1 + abs((x - mf.t) / mf.l)^2mf.r)
 μ(x, mf::Triangular) = max(min((x - mf.l) / (mf.t - mf.l), (mf.r - x) / (mf.r - mf.t)), 0.0)
 μ(x, mf::Trapezoid)  = max(min((x - mf.lb) / (mf.lt - mf.lb), 1, (mf.rb - x) / (mf.rb - mf.rt)), 0)
-μ(x, mf::Sigmoid)    = @fastmath 1 / (1 + exp(-mf.a * (x - mf.c)))
+μ(x, mf::Sigmoid)    = 1 / (1 + exp(-mf.a * (x - mf.c)))
 μ(x, mf::Lins)       = mf.a <= x <= mf.b ? (x-mf.a) / (mf.b-mf.a) : x <= mf.a ? 0.0 : 1.0
 μ(x, mf::Linz)       = mf.a <= x <= mf.b ? (mf.a-x) / (mf.a-mf.b) : x <= mf.a ? 1.0 : 0.0
 μ(x, mf::Singleton)  = x == mf.y ? 1.0 : 0.0
+end
 
 function ⊕(w, x, y, z)
     if w == x == y == z || y - z == 0
